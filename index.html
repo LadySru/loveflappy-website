@@ -214,6 +214,47 @@
             box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
         }
 
+        .live-indicator {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            background: rgba(220, 38, 38, 0.2);
+            border: 2px solid #dc2626;
+            border-radius: 50px;
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        .live-indicator.active {
+            display: flex;
+        }
+
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background: #dc2626;
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+            box-shadow: 0 0 10px #dc2626;
+        }
+
+        .live-text {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+            }
+        }
+
         .logo-container {
             display: flex;
             align-items: center;
@@ -227,6 +268,7 @@
             border: 3px solid #dc2626;
             box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
             animation: pulse 2s ease-in-out infinite;
+            object-fit: cover;
         }
 
         .logo {
@@ -1219,8 +1261,12 @@
 
     <header>
         <div class="logo-container">
-            <img src="https://yt3.googleusercontent.com/4Ye2uHsT7yLi4pXnmg0_JmqJpKLtE6fmUW1t7X7SrjDO5h7tJ5F3mPV9BoSJyNZKHX8H-Pj0=s160-c-k-c0x00ffffff-no-rj" alt="LoveFlappy" class="logo-img">
+            <img src="https://yt3.googleusercontent.com/A_enta9Y8YfHqR7EKPPPxUZGCMxWXwZ5KLm_mwKZmLpZqFe5Cs_KyPkd-HWvVJXDnqO-M3mN=s160-c-k-c0x00ffffff-no-rj" alt="LoveFlappy" class="logo-img">
             <div class="logo">LoveFlappy</div>
+        </div>
+        <div class="live-indicator" id="liveIndicator">
+            <div class="live-dot"></div>
+            <div class="live-text">LIVE NOW</div>
         </div>
         <nav>
             <a href="#featured">Featured</a>
@@ -1232,13 +1278,74 @@
         </nav>
     </header>
 
+    <script>
+        // Live stream checker for YouTube
+        async function checkIfLive() {
+            try {
+                // This checks if there's a live stream by looking for the /live endpoint
+                const response = await fetch('https://www.youtube.com/@LoveFlappy/live', {
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                
+                // Alternative method: Check using YouTube RSS feed
+                const rssUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=UC_CHANNEL_ID_HERE';
+                
+                // For now, we'll simulate checking every 2 minutes
+                // In production, you'd want to use YouTube API with proper authentication
+                
+                // Simulated live status - replace with actual API call
+                const isLive = false; // Change this to test
+                
+                const liveIndicator = document.getElementById('liveIndicator');
+                if (isLive) {
+                    liveIndicator.classList.add('active');
+                    liveIndicator.style.cursor = 'pointer';
+                    liveIndicator.onclick = () => window.open('https://www.youtube.com/@LoveFlappy/live', '_blank');
+                } else {
+                    liveIndicator.classList.remove('active');
+                }
+            } catch (error) {
+                console.log('Error checking live status');
+            }
+        }
+
+        // Check immediately and then every 2 minutes
+        checkIfLive();
+        setInterval(checkIfLive, 120000); // Check every 2 minutes
+
+        // Update live indicator to link to Twitch when live
+        const liveIndicator = document.getElementById('liveIndicator');
+        if (liveIndicator) {
+            liveIndicator.onclick = () => window.open('https://www.twitch.tv/loveflappy', '_blank');
+        }
+
+        // IMPORTANT: To make this work properly, you need to:
+        // 1. Get a YouTube Data API key from Google Cloud Console
+        // 2. Find your channel ID
+        // 3. Use this API endpoint: 
+        //    https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=YOUR_CHANNEL_ID&eventType=live&type=video&key=YOUR_API_KEY
+    </script>
+
     <div class="hero">
         <div style="width: 100%;">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300'%3E%3Crect fill='%23000000' width='1200' height='300'/%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%23dc2626;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%23f59e0b;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23059669;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ctext x='50%25' y='45%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial, sans-serif' font-size='100' font-weight='bold' fill='url(%23grad1)' letter-spacing='10'%3ELOVE FLAPPY%3C/text%3E%3Ctext x='50%25' y='70%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial, sans-serif' font-size='40' fill='%23ffffff' letter-spacing='5' opacity='0.8'%3ESUBSCRIBE%3C/text%3E%3Ctext x='100' y='90' font-size='50' opacity='0.6'%3E🔥%3C/text%3E%3Ctext x='1100' y='90' font-size='50' opacity='0.6'%3E🌊%3C/text%3E%3Ctext x='100' y='240' font-size='50' opacity='0.6'%3E⚡%3C/text%3E%3Ctext x='1100' y='240' font-size='50' opacity='0.6'%3E🗡️%3C/text%3E%3Cpath d='M 80 50 L 150 50 L 150 120 L 80 120 Z' fill='none' stroke='%23dc2626' stroke-width='3' opacity='0.5'/%3E%3Cpath d='M 1050 50 L 1120 50 L 1120 120 L 1050 120 Z' fill='none' stroke='%23059669' stroke-width='3' opacity='0.5'/%3E%3Cpath d='M 80 180 L 150 180 L 150 250 L 80 250 Z' fill='none' stroke='%23f59e0b' stroke-width='3' opacity='0.5'/%3E%3Cpath d='M 1050 180 L 1120 180 L 1120 250 L 1050 250 Z' fill='none' stroke='%23dc2626' stroke-width='3' opacity='0.5'/%3E%3C/svg%3E" alt="LoveFlappy Banner" class="hero-banner">
+            <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="hero-banner" title="Visit LoveFlappy's YouTube Channel">
+                <img src="https://i.imgur.com/placeholder.jpg" alt="LoveFlappy Banner">
+                <div class="banner-overlay">
+                    <div class="banner-play-icon">▶</div>
+                </div>
+            </a>
             
             <div class="hero-content">
                 <h1>Welcome to LoveFlappy</h1>
-                <p>Your Gateway to Epic Anime Content & Neon Gaming Vibes</p>
+                <p style="max-width: 800px; margin: 0 auto 40px; line-height: 1.8; font-size: 18px;">
+                    I love entertainment! 🧖🏾 🕹️💭<br>
+                    ADHD, TOPICS CHANGE SPASTICALLY!<br>
+                    ❤️➡️🩵➡️🩷 (Thanks for understanding!)<br>
+                    Used to be on vine: AMV Editor. (Flapjack1237)<br>
+                    I make content when I can!<br>
+                    <strong>Business Email:</strong> Flapjack1238@gmail.com
+                </p>
                 <div class="hero-buttons">
                     <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="cta-button"><span>Subscribe on YouTube</span></a>
                     <a href="https://x.com/EsotericFlap" target="_blank" class="cta-button cta-secondary"><span>Follow on X</span></a>
@@ -1350,27 +1457,38 @@
 
     <section id="vods">
         <h2>Latest Twitch VODs</h2>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="https://www.twitch.tv/loveflappy/videos?filter=all" target="_blank" class="cta-button" style="display: inline-block; text-decoration: none;">
+                <span>View All VODs on Twitch</span>
+            </a>
+        </div>
         <div class="vod-grid">
             <div class="vod-card">
-                <div class="vod-thumbnail"></div>
-                <div class="vod-info">
-                    <h3>24 Hour Anime Marathon Stream!</h3>
-                    <p>Streamed 3 days ago • 6h 32m</p>
-                </div>
+                <a href="https://www.twitch.tv/loveflappy/videos?filter=all" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div class="vod-thumbnail"></div>
+                    <div class="vod-info">
+                        <h3>24 Hour Anime Marathon Stream!</h3>
+                        <p>Streamed 3 days ago • 6h 32m</p>
+                    </div>
+                </a>
             </div>
             <div class="vod-card">
-                <div class="vod-thumbnail"></div>
-                <div class="vod-info">
-                    <h3>Reacting to Viewer Anime Recommendations</h3>
-                    <p>Streamed 5 days ago • 4h 15m</p>
-                </div>
+                <a href="https://www.twitch.tv/loveflappy/videos?filter=all" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div class="vod-thumbnail"></div>
+                    <div class="vod-info">
+                        <h3>Reacting to Viewer Anime Recommendations</h3>
+                        <p>Streamed 5 days ago • 4h 15m</p>
+                    </div>
+                </a>
             </div>
             <div class="vod-card">
-                <div class="vod-thumbnail"></div>
-                <div class="vod-info">
-                    <h3>Live Anime Tier List Creation</h3>
-                    <p>Streamed 1 week ago • 3h 48m</p>
-                </div>
+                <a href="https://www.twitch.tv/loveflappy/videos?filter=all" target="_blank" style="text-decoration: none; color: inherit;">
+                    <div class="vod-thumbnail"></div>
+                    <div class="vod-info">
+                        <h3>Live Anime Tier List Creation</h3>
+                        <p>Streamed 1 week ago • 3h 48m</p>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
