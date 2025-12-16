@@ -551,5 +551,92 @@
             <a href="https://discord.gg/NKCYHHMtnJ" target="_blank">💬</a>
         </div>
     </footer>
+
+    <script>
+        // YouTube Channel Configuration
+        const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
+
+        async function loadLatestVideos() {
+            try {
+                // Use YouTube's oEmbed API - more reliable and no CORS issues
+                const videoIds = [
+                    '3Kk6eYipVtg', // You can manually add recent video IDs here
+                    // Or we'll fetch from RSS
+                ];
+                
+                // Try using YouTube RSS through cors-anywhere alternative
+                const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+                const proxyUrl = 'https://corsproxy.io/?';
+                
+                const response = await fetch(proxyUrl + encodeURIComponent(rssUrl));
+                const text = await response.text();
+                
+                // Parse XML
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(text, 'text/xml');
+                const entries = xml.querySelectorAll('entry');
+                
+                if (entries.length === 0) {
+                    throw new Error('No videos found in RSS feed');
+                }
+                
+                const videoGrid = document.querySelector('.video-grid');
+                videoGrid.innerHTML = '';
+                
+                // Get first 6 videos
+                Array.from(entries).slice(0, 6).forEach(entry => {
+                    const videoId = entry.querySelector('videoId').textContent;
+                    const title = entry.querySelector('title').textContent;
+                    const thumbnail = `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
+                    const published = new Date(entry.querySelector('published').textContent);
+                    const timeAgo = getTimeAgo(published);
+                    
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'video-card';
+                    videoCard.innerHTML = `
+                        <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" style="text-decoration: none; color: inherit;">
+                            <div class="video-thumbnail" style="background-image: url('${thumbnail}'); background-size: cover; background-position: center;"></div>
+                            <div class="video-info">
+                                <h3>${title}</h3>
+                                <p>${timeAgo}</p>
+                            </div>
+                        </a>
+                    `;
+                    
+                    videoGrid.appendChild(videoCard);
+                });
+                
+                console.log('✅ Successfully loaded', entries.length, 'videos');
+            } catch (error) {
+                console.error('Error loading YouTube videos:', error);
+                console.log('📝 Using fallback - showing placeholder videos');
+                // Fallback: Keep the existing placeholder videos
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " minutes ago";
+            
+            return Math.floor(seconds) + " seconds ago";
+        }
+
+        // Load videos when page loads
+        window.addEventListener('load', loadLatestVideos);
+    </script>
 </body>
 </html>
