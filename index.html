@@ -95,16 +95,29 @@
             overflow: hidden;
         }
 
+        .bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
         .bg-container::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(220, 38, 38, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
-            animation: bgMove 20s linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.7) 0%, rgba(26, 5, 8, 0.8) 50%, rgba(15, 10, 26, 0.7) 100%);
+            z-index: 1;
+            pointer-events: none;
         }
 
         .bg-container::after {
@@ -115,6 +128,8 @@
             background-image: 
                 repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(220, 38, 38, 0.03) 2px, rgba(220, 38, 38, 0.03) 4px);
             animation: slidePattern 10s linear infinite;
+            z-index: 2;
+            pointer-events: none;
         }
 
         @keyframes slidePattern {
@@ -1251,6 +1266,13 @@
     </div>
 
     <div class="bg-container">
+        <iframe 
+            class="bg-video"
+            src="https://www.youtube.com/embed/3Kk6eYipVtg?autoplay=1&mute=1&loop=1&playlist=3Kk6eYipVtg&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+        </iframe>
         <div class="floating-shapes">
             <div class="neon-icon"></div>
             <div class="neon-icon"></div>
