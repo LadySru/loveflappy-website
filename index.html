@@ -271,45 +271,6 @@
             font-size: 14px;
         }
 
-        /* VODs */
-        .vod-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-        }
-
-        .vod-card {
-            background: rgba(145, 70, 255, 0.1);
-            border: 3px solid #9146ff;
-            transition: all 0.3s;
-        }
-
-        .vod-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(145, 70, 255, 0.5);
-        }
-
-        .vod-thumbnail {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #1a0a1f, #2d1b4e);
-        }
-
-        .vod-info {
-            padding: 20px;
-        }
-
-        .vod-info h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .vod-info p {
-            color: #aaa;
-            font-size: 14px;
-        }
-
         /* Newsletter */
         .newsletter-container {
             background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(245, 158, 11, 0.1));
@@ -423,7 +384,7 @@
         @media (max-width: 768px) {
             .hero-content h1 { font-size: 42px; }
             nav a { margin-left: 15px; font-size: 14px; }
-            .video-grid, .vod-grid { grid-template-columns: 1fr; }
+            .video-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -455,7 +416,6 @@
         <nav>
             <a href="#home">Home</a>
             <a href="#videos">Videos</a>
-            <a href="#vods">VODs</a>
             <a href="#newsletter">Newsletter</a>
             <a href="#discord">Discord</a>
         </nav>
@@ -518,54 +478,6 @@
         </div>
     </section>
 
-    <section id="vods">
-        <h2>Twitch Stream & VODs</h2>
-        <div style="text-align: center; margin-bottom: 30px;">
-            <a href="https://www.twitch.tv/loveflappy/videos?filter=all&sort=time" target="_blank" class="cta-button">View All VODs</a>
-        </div>
-        
-        <!-- Embedded Twitch Player -->
-        <div style="margin-bottom: 50px; border: 3px solid #9146ff; border-radius: 10px; overflow: hidden;">
-            <iframe
-                src="https://player.twitch.tv/?channel=loveflappy&parent=localhost&parent=127.0.0.1&autoplay=false&muted=false"
-                height="480"
-                width="100%"
-                allowfullscreen>
-            </iframe>
-        </div>
-
-        <h2>Recent VODs</h2>
-        <div class="vod-grid">
-            <div class="vod-card">
-                <a href="https://www.twitch.tv/loveflappy/videos?filter=all&sort=time" target="_blank" style="text-decoration: none; color: inherit;">
-                    <div class="vod-thumbnail"></div>
-                    <div class="vod-info">
-                        <h3>24 Hour Marathon Stream</h3>
-                        <p>3 days ago • 6h 32m</p>
-                    </div>
-                </a>
-            </div>
-            <div class="vod-card">
-                <a href="https://www.twitch.tv/loveflappy/videos?filter=all&sort=time" target="_blank" style="text-decoration: none; color: inherit;">
-                    <div class="vod-thumbnail"></div>
-                    <div class="vod-info">
-                        <h3>Anime Reactions</h3>
-                        <p>5 days ago • 4h 15m</p>
-                    </div>
-                </a>
-            </div>
-            <div class="vod-card">
-                <a href="https://www.twitch.tv/loveflappy/videos?filter=all&sort=time" target="_blank" style="text-decoration: none; color: inherit;">
-                    <div class="vod-thumbnail"></div>
-                    <div class="vod-info">
-                        <h3>Tier List Creation</h3>
-                        <p>1 week ago • 3h 48m</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
     <section id="newsletter">
         <div class="newsletter-container">
             <div class="newsletter-icon">📧</div>
@@ -581,9 +493,19 @@
     <section id="discord">
         <div class="discord-container">
             <div class="discord-icon">💬</div>
-            <h2>Join Our Discord</h2>
+            <h2>Join Our Discord & Live Chat</h2>
             <p>Connect with the community!</p>
-            <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="discord-button">Join Server</a>
+            <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="discord-button" style="margin-bottom: 30px; display: inline-block;">Join Discord Server</a>
+            
+            <!-- Discord Live Chat Embed -->
+            <div style="margin-top: 30px; border: 3px solid #5865f2; border-radius: 10px; overflow: hidden; background: #1e2124;">
+                <iframe
+                    src="https://streamkit.discord.com/overlay/chat/863475027214598173/1180150401354436730?icon=true&online=true&logo=white&text_color=%23ffffff&text_size=14&text_outline_color=%23000000&text_outline_size=0&text_shadow_color=%23000000&text_shadow_size=0&bg_color=%231e2124&bg_opacity=0.95&bg_shadow_color=%23000000&bg_shadow_size=0&invite_code=ultimate-party-b-a-m-f-863475027214598173&limit_speaking=false&small_avatars=false&hide_names=false&fade_chat=0&streamer_avatar_first=false"
+                    width="100%"
+                    height="600"
+                    frameborder="0">
+                </iframe>
+            </div>
         </div>
     </section>
 
