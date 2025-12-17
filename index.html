@@ -114,6 +114,33 @@
             letter-spacing: 3px;
         }
 
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid #dc2626;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+            margin-right: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(220, 38, 38, 1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
         nav a {
             color: #fff;
             text-decoration: none;
@@ -419,7 +446,12 @@
     </div>
 
     <header>
-        <div class="logo">LoveFlappy</div>
+        <div class="logo-container">
+            <a href="#home" class="logo-link">
+                <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy Logo" class="logo-img">
+                <div class="logo">LoveFlappy</div>
+            </a>
+        </div>
         <nav>
             <a href="#home">Home</a>
             <a href="#videos">Videos</a>
@@ -565,64 +597,56 @@
     </footer>
 
     <script>
-        // YouTube Channel Configuration
+        // YouTube API Configuration
+        const YOUTUBE_API_KEY = 'AIzaSyAf9Fd0eEUxYlXIwKRinde1WGBWnsP78Fk';
         const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
 
         async function loadLatestVideos() {
             try {
-                // Use YouTube's oEmbed API - more reliable and no CORS issues
-                const videoIds = [
-                    '3Kk6eYipVtg', // You can manually add recent video IDs here
-                    // Or we'll fetch from RSS
-                ];
+                // Use YouTube Data API v3
+                const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=6&type=video`;
                 
-                // Try using YouTube RSS through cors-anywhere alternative
-                const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-                const proxyUrl = 'https://corsproxy.io/?';
+                const response = await fetch(apiUrl);
+                const data = await response.json();
                 
-                const response = await fetch(proxyUrl + encodeURIComponent(rssUrl));
-                const text = await response.text();
-                
-                // Parse XML
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(text, 'text/xml');
-                const entries = xml.querySelectorAll('entry');
-                
-                if (entries.length === 0) {
-                    throw new Error('No videos found in RSS feed');
+                if (data.error) {
+                    console.error('YouTube API Error:', data.error.message);
+                    throw new Error(data.error.message);
                 }
                 
-                const videoGrid = document.querySelector('.video-grid');
-                videoGrid.innerHTML = '';
-                
-                // Get first 6 videos
-                Array.from(entries).slice(0, 6).forEach(entry => {
-                    const videoId = entry.querySelector('videoId').textContent;
-                    const title = entry.querySelector('title').textContent;
-                    const thumbnail = `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
-                    const published = new Date(entry.querySelector('published').textContent);
-                    const timeAgo = getTimeAgo(published);
+                if (data.items && data.items.length > 0) {
+                    const videoGrid = document.querySelector('.video-grid');
+                    videoGrid.innerHTML = '';
                     
-                    const videoCard = document.createElement('div');
-                    videoCard.className = 'video-card';
-                    videoCard.innerHTML = `
-                        <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div class="video-thumbnail" style="background-image: url('${thumbnail}'); background-size: cover; background-position: center;"></div>
-                            <div class="video-info">
-                                <h3>${title}</h3>
-                                <p>${timeAgo}</p>
-                            </div>
-                        </a>
-                    `;
+                    data.items.forEach(item => {
+                        const videoId = item.id.videoId;
+                        const title = item.snippet.title;
+                        const thumbnail = item.snippet.thumbnails.medium.url;
+                        const published = new Date(item.snippet.publishedAt);
+                        const timeAgo = getTimeAgo(published);
+                        
+                        const videoCard = document.createElement('div');
+                        videoCard.className = 'video-card';
+                        videoCard.innerHTML = `
+                            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" style="text-decoration: none; color: inherit;">
+                                <div class="video-thumbnail" style="background-image: url('${thumbnail}'); background-size: cover; background-position: center;"></div>
+                                <div class="video-info">
+                                    <h3>${title}</h3>
+                                    <p>${timeAgo}</p>
+                                </div>
+                            </a>
+                        `;
+                        
+                        videoGrid.appendChild(videoCard);
+                    });
                     
-                    videoGrid.appendChild(videoCard);
-                });
-                
-                console.log('✅ Successfully loaded', entries.length, 'videos');
+                    console.log('✅ Successfully loaded', data.items.length, 'videos from YouTube API');
+                } else {
+                    console.log('📝 No videos found, keeping placeholders');
+                }
             } catch (error) {
                 console.error('Error loading YouTube videos:', error);
-                console.log('📝 Using fallback - showing placeholder videos');
-                // Fallback: Keep the existing placeholder videos
+                console.log('📝 Using fallback - keeping placeholder videos');
             }
         }
 
