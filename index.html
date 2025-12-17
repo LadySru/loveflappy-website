@@ -593,8 +593,6 @@
         <nav>
             <a href="#home">Home</a>
             <a href="#videos">Videos</a>
-            <a href="#newsletter">Newsletter</a>
-            <a href="#discord">Discord</a>
         </nav>
     </header>
 
@@ -629,8 +627,19 @@
             </iframe>
         </div>
 
-        <h2>Latest Videos</h2>
-        <div class="video-grid">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+            <h2 style="margin: 0;">All Videos</h2>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <select id="videoFilter" style="padding: 10px 20px; background: rgba(220, 38, 38, 0.2); border: 2px solid #dc2626; color: #fff; font-size: 14px; cursor: pointer; font-weight: bold;">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="popular">Most Popular</option>
+                    <option value="unpopular">Least Popular</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="video-grid" id="videoGrid">
             <div class="video-card">
                 <div class="video-thumbnail"></div>
                 <div class="video-info">
@@ -652,37 +661,68 @@
                     <p>Posted 1 week ago • 320K views</p>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section id="newsletter">
-        <div class="newsletter-container">
-            <div class="newsletter-icon">📧</div>
-            <h2>Join the Newsletter</h2>
-            <p>Get exclusive content and early video access!</p>
-            <form class="newsletter-form">
-                <input type="email" class="newsletter-input" placeholder="Enter your email" required>
-                <button type="submit" class="newsletter-button">Subscribe</button>
-            </form>
-        </div>
-    </section>
-
-    <section id="discord">
-        <div class="discord-container">
-            <div class="discord-icon">💬</div>
-            <h2>Join Our Discord & Live Chat</h2>
-            <p>Connect with the community and chat live!</p>
-            <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="discord-button" style="margin-bottom: 30px; display: inline-block;">Join Discord Server</a>
-            
-            <!-- Discord Live Chat Embed - Works when deployed to hosting service -->
-            <div style="margin-top: 30px; border: 3px solid #5865f2; border-radius: 10px; overflow: hidden; background: #1e2124; min-height: 600px; display: flex; align-items: center; justify-content: center;">
-                <iframe
-                    src="https://streamkit.discord.com/overlay/chat/863475027214598173/1180150401354436730?icon=true&online=true&logo=white&text_color=%23ffffff&text_size=14&text_outline_color=%23000000&text_outline_size=0&text_shadow_color=%23000000&text_shadow_size=0&bg_color=%231e2124&bg_opacity=0.95&bg_shadow_color=%23000000&bg_shadow_size=0&invite_code=ultimate-party-b-a-m-f-863475027214598173&limit_speaking=false&small_avatars=false&hide_names=false&fade_chat=0&streamer_avatar_first=false"
-                    width="100%"
-                    height="600"
-                    frameborder="0"
-                    style="display: block;">
-                </iframe>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>Anime Openings That Hit Different</h3>
+                    <p>Posted 1 week ago • 420K views</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>My Anime Room Tour 2024</h3>
+                    <p>Posted 2 weeks ago • 280K views</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>Crunchyroll Exclusives Review</h3>
+                    <p>Posted 2 weeks ago • 195K views</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>Best Anime Fights Compilation</h3>
+                    <p>Posted 3 weeks ago • 510K views</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>Anime News Weekly Roundup</h3>
+                    <p>Posted 3 weeks ago • 150K views</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>Manga vs Anime Comparison</h3>
+                    <p>Posted 1 month ago • 380K views</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>Voice Actor Interviews</h3>
+                    <p>Posted 1 month ago • 220K views</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>Anime Convention Vlog</h3>
+                    <p>Posted 1 month ago • 290K views</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-thumbnail"></div>
+                <div class="video-info">
+                    <h3>Studio Ghibli Deep Dive</h3>
+                    <p>Posted 2 months ago • 450K views</p>
+                </div>
             </div>
         </div>
     </section>
@@ -773,6 +813,54 @@
 
         // Load videos when page loads
         window.addEventListener('load', loadLatestVideos);
+
+        // Video Filter Functionality
+        const videoFilter = document.getElementById('videoFilter');
+        if (videoFilter) {
+            videoFilter.addEventListener('change', function() {
+                const filter = this.value;
+                const videoGrid = document.getElementById('videoGrid');
+                const videos = Array.from(videoGrid.children);
+                
+                // Sort videos based on filter
+                videos.sort((a, b) => {
+                    const aText = a.querySelector('.video-info p').textContent;
+                    const bText = b.querySelector('.video-info p').textContent;
+                    
+                    // Extract views
+                    const aViews = parseInt(aText.match(/(\d+)K views/)?.[1] || 0) * 1000;
+                    const bViews = parseInt(bText.match(/(\d+)K views/)?.[1] || 0) * 1000;
+                    
+                    // Extract time (simple approximation)
+                    const getTimeValue = (text) => {
+                        if (text.includes('days ago')) return parseInt(text);
+                        if (text.includes('week')) return parseInt(text) * 7 + 30;
+                        if (text.includes('month')) return parseInt(text) * 30 + 100;
+                        return 0;
+                    };
+                    
+                    const aTime = getTimeValue(aText);
+                    const bTime = getTimeValue(bText);
+                    
+                    switch(filter) {
+                        case 'newest':
+                            return aTime - bTime;
+                        case 'oldest':
+                            return bTime - aTime;
+                        case 'popular':
+                            return bViews - aViews;
+                        case 'unpopular':
+                            return aViews - bViews;
+                        default:
+                            return 0;
+                    }
+                });
+                
+                // Clear and re-append sorted videos
+                videoGrid.innerHTML = '';
+                videos.forEach(video => videoGrid.appendChild(video));
+            });
+        }
     </script>
 </body>
 </html>
