@@ -627,16 +627,8 @@
             </iframe>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+        <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px;">
             <h2 style="margin: 0;">All Videos</h2>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <select id="videoFilter" style="padding: 10px 20px; background: rgba(220, 38, 38, 0.2); border: 2px solid #dc2626; color: #fff; font-size: 14px; cursor: pointer; font-weight: bold;">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="popular">Most Popular</option>
-                    <option value="unpopular">Least Popular</option>
-                </select>
-            </div>
         </div>
 
         <div class="video-grid" id="videoGrid">
@@ -813,54 +805,6 @@
 
         // Load videos when page loads
         window.addEventListener('load', loadLatestVideos);
-
-        // Video Filter Functionality
-        const videoFilter = document.getElementById('videoFilter');
-        if (videoFilter) {
-            videoFilter.addEventListener('change', function() {
-                const filter = this.value;
-                const videoGrid = document.getElementById('videoGrid');
-                const videos = Array.from(videoGrid.children);
-                
-                // Sort videos based on filter
-                videos.sort((a, b) => {
-                    const aText = a.querySelector('.video-info p').textContent;
-                    const bText = b.querySelector('.video-info p').textContent;
-                    
-                    // Extract views
-                    const aViews = parseInt(aText.match(/(\d+)K views/)?.[1] || 0) * 1000;
-                    const bViews = parseInt(bText.match(/(\d+)K views/)?.[1] || 0) * 1000;
-                    
-                    // Extract time (simple approximation)
-                    const getTimeValue = (text) => {
-                        if (text.includes('days ago')) return parseInt(text);
-                        if (text.includes('week')) return parseInt(text) * 7 + 30;
-                        if (text.includes('month')) return parseInt(text) * 30 + 100;
-                        return 0;
-                    };
-                    
-                    const aTime = getTimeValue(aText);
-                    const bTime = getTimeValue(bText);
-                    
-                    switch(filter) {
-                        case 'newest':
-                            return aTime - bTime;
-                        case 'oldest':
-                            return bTime - aTime;
-                        case 'popular':
-                            return bViews - aViews;
-                        case 'unpopular':
-                            return aViews - bViews;
-                        default:
-                            return 0;
-                    }
-                });
-                
-                // Clear and re-append sorted videos
-                videoGrid.innerHTML = '';
-                videos.forEach(video => videoGrid.appendChild(video));
-            });
-        }
     </script>
 </body>
 </html>
