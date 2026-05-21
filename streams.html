@@ -352,7 +352,7 @@
                 <span class="stream-title">twitch.tv/loveflappy</span>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
                     <a href="https://www.twitch.tv/loveflappy" target="_blank" class="stream-link link-twitch">Open Twitch ↗</a>
-                    <a href="https://www.twitch.tv/loveflappy/videos" target="_blank" class="stream-link link-vods">Past VODs</a>
+                    <a href="https://www.twitch.tv/loveflappy/videos?filter=archives&amp;sort=time" target="_blank" class="stream-link link-vods">Past VODs</a>
                 </div>
             </div>
         </div>
@@ -484,7 +484,7 @@
                 grid.style.display = 'grid';
             }
         } catch(e) {
-            document.getElementById('pastGrid').innerHTML = `<p style="color:#666;font-size:14px;">Could not load past streams. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank" style="color:#dc2626;">View on YouTube →</a></p>`;
+            document.getElementById('pastGrid').innerHTML = `<p style="color:#666;font-size:14px;">Could not load past streams. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank" style="color:#dc2626;">View all streams on YouTube →</a></p>`;
             document.getElementById('pastGrid').style.display = 'block';
         }
         document.getElementById('loadingPast').style.display = 'none';
