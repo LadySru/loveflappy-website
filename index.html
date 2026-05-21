@@ -477,7 +477,6 @@
 </footer>
 
 <script>
-    const API_KEY = 'AIzaSyAf9Fd0eEUxYlXIwKRinde1WGBWnsP78Fk';
     const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
     const loaded = { videos: false, livestreams: false, shorts: false };
 
@@ -523,19 +522,21 @@
         return card;
     }
 
-    async function fetchYT(url) {
-        const res = await fetch(url);
+    async function fetchYT(endpoint, params) {
+        const qs = new URLSearchParams(params);
+        qs.set('endpoint', endpoint);
+        const res = await fetch('/api/youtube?' + qs.toString());
         const data = await res.json();
-        if (data.error) throw new Error(data.error.message);
+        if (data.error) throw new Error(data.error.message || data.error);
         return data;
     }
 
     async function loadVideos() {
         loaded.videos = true;
         try {
-            const data = await fetchYT(
-                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=12&type=video`
-            );
+            const data = await fetchYT('search', {
+                channelId: CHANNEL_ID, part: 'snippet,id', order: 'date', maxResults: '12', type: 'video'
+            });
             const grid = document.getElementById('videoGrid');
             grid.innerHTML = '';
             (data.items || []).forEach(item => {
@@ -560,17 +561,16 @@
         const grid = document.getElementById('streamsGrid');
         grid.innerHTML = '';
         try {
-            // Try live first
-            const live = await fetchYT(
-                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=live&maxResults=6`
-            );
+            const live = await fetchYT('search', {
+                channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'live', maxResults: '6'
+            });
             let items = live.items || [];
             const isLive = items.length > 0;
 
             if (!isLive) {
-                const past = await fetchYT(
-                    `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=completed&order=date&maxResults=8`
-                );
+                const past = await fetchYT('search', {
+                    channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'completed', order: 'date', maxResults: '8'
+                });
                 items = past.items || [];
             }
 
@@ -599,9 +599,9 @@
     async function loadShorts() {
         loaded.shorts = true;
         try {
-            const data = await fetchYT(
-                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&videoDuration=short&order=date&maxResults=18`
-            );
+            const data = await fetchYT('search', {
+                channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', videoDuration: 'short', order: 'date', maxResults: '18'
+            });
             const grid = document.getElementById('shortsGrid');
             grid.innerHTML = '';
             (data.items || []).forEach(item => {
@@ -621,12 +621,11 @@
         }
     }
 
-    // Check YouTube live status for dot indicator
     async function checkLiveStatus() {
         try {
-            const data = await fetchYT(
-                `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=snippet`
-            );
+            const data = await fetchYT('channels', {
+                id: CHANNEL_ID, part: 'snippet'
+            });
             const ch = data.items?.[0];
             if (ch?.snippet?.liveBroadcastContent === 'live') {
                 document.getElementById('liveDot').classList.add('active');
