@@ -3,808 +3,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoveFlappy | Anime Content Creator</title>
+    <title>LoveFlappy | Gaming & Content Creator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --red: #dc2626;
+            --amber: #f59e0b;
+            --purple: #9146ff;
+            --discord: #5865f2;
+            --dark: #0a0508;
+            --card: rgba(255,255,255,0.04);
+            --border: rgba(220,38,38,0.35);
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Inter', Arial, sans-serif;
             background: #000;
             color: #fff;
             overflow-x: hidden;
         }
 
-        /* Japanese Street GIF Background */
+        /* Background */
         .bg-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
         }
-
         .bg-gif {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            min-width: 100%; min-height: 100%;
             object-fit: cover;
         }
-
-        .bg-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1;
+        .bg-container::after {
+            content: ''; position: absolute; inset: 0;
+            background: rgba(0,0,0,0.62); z-index: 1;
         }
 
         /* Snowfall */
         .snowflakes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            overflow: hidden;
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 9999; overflow: hidden;
         }
-
         .snowflake {
-            position: absolute;
-            top: -10px;
-            color: #fff;
-            font-size: 1em;
-            opacity: 0.8;
+            position: absolute; top: -10px; color: #fff;
+            font-size: 1em; opacity: 0.7;
             animation: fall linear infinite;
         }
-
         @keyframes fall {
-            0% { top: -10%; opacity: 0.8; }
-            100% { top: 100%; opacity: 0.3; }
+            0%   { top: -10%; opacity: 0.7; }
+            100% { top: 105%; opacity: 0.2; }
         }
-
-        .snowflake:nth-child(1) { left: 2%; animation-duration: 8s; }
-        .snowflake:nth-child(2) { left: 15%; animation-duration: 10s; animation-delay: 1s; }
-        .snowflake:nth-child(3) { left: 30%; animation-duration: 12s; animation-delay: 2s; }
-        .snowflake:nth-child(4) { left: 45%; animation-duration: 9s; }
-        .snowflake:nth-child(5) { left: 60%; animation-duration: 11s; animation-delay: 1s; }
-        .snowflake:nth-child(6) { left: 75%; animation-duration: 10s; animation-delay: 2s; }
-        .snowflake:nth-child(7) { left: 88%; animation-duration: 13s; }
-        .snowflake:nth-child(8) { left: 10%; animation-duration: 9s; animation-delay: 3s; }
-        .snowflake:nth-child(9) { left: 25%; animation-duration: 11s; }
+        .snowflake:nth-child(1)  { left: 2%;  animation-duration: 8s; }
+        .snowflake:nth-child(2)  { left: 15%; animation-duration: 10s; animation-delay: 1s; }
+        .snowflake:nth-child(3)  { left: 30%; animation-duration: 12s; animation-delay: 2s; }
+        .snowflake:nth-child(4)  { left: 45%; animation-duration: 9s; }
+        .snowflake:nth-child(5)  { left: 60%; animation-duration: 11s; animation-delay: 1s; }
+        .snowflake:nth-child(6)  { left: 75%; animation-duration: 10s; animation-delay: 2s; }
+        .snowflake:nth-child(7)  { left: 88%; animation-duration: 13s; }
+        .snowflake:nth-child(8)  { left: 10%; animation-duration: 9s;  animation-delay: 3s; }
+        .snowflake:nth-child(9)  { left: 25%; animation-duration: 11s; }
         .snowflake:nth-child(10) { left: 40%; animation-duration: 10s; animation-delay: 1.5s; }
 
         /* Header */
         header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px 50px;
-            background: rgba(10, 5, 8, 0.95);
-            backdrop-filter: blur(10px);
+            position: fixed; top: 0; width: 100%;
+            padding: 14px 48px;
+            background: rgba(10,5,8,0.92);
+            backdrop-filter: blur(14px);
             z-index: 1000;
-            border-bottom: 3px solid #dc2626;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-bottom: 2px solid var(--red);
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            background: linear-gradient(45deg, #dc2626, #f59e0b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
+        .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .logo-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid #dc2626;
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
-            margin-right: 15px;
-            transition: all 0.3s;
-            cursor: pointer;
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 2px solid var(--red);
+            box-shadow: 0 0 14px rgba(220,38,38,0.6);
+            transition: box-shadow .3s;
         }
-
-        .logo-img:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(220, 38, 38, 1);
+        .logo-img:hover { box-shadow: 0 0 28px rgba(220,38,38,1); }
+        .logo-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 26px; font-weight: 700;
+            background: linear-gradient(45deg, var(--red), var(--amber));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 2px; text-transform: uppercase;
         }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
+        nav { display: flex; gap: 8px; align-items: center; }
         nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 30px;
-            transition: all 0.3s;
+            color: #ccc; text-decoration: none;
+            padding: 6px 16px; border-radius: 4px;
+            font-size: 14px; font-weight: 500;
+            transition: all .25s;
+            letter-spacing: .5px;
         }
-
-        nav a:hover {
-            color: #dc2626;
+        nav a:hover, nav a.active { color: #fff; background: rgba(220,38,38,0.18); }
+        .nav-streams {
+            background: linear-gradient(45deg, var(--red), var(--amber)) !important;
+            color: #fff !important;
+            font-weight: 700 !important;
+            padding: 6px 18px !important;
         }
+        .nav-streams:hover { opacity: .85; transform: translateY(-1px); }
 
-        /* Hero */
+        /* Hero / Profile Card */
         .hero {
-            min-height: 80vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 110px 24px 60px;
+        }
+        .profile-card {
             text-align: center;
-            padding: 120px 50px 50px;
+            max-width: 700px; width: 100%;
+        }
+        .avatar-wrap {
+            position: relative; display: inline-block; margin-bottom: 24px;
+        }
+        .avatar-ring {
+            width: 148px; height: 148px; border-radius: 50%;
+            background: conic-gradient(var(--red), var(--amber), var(--red));
+            padding: 4px;
+            animation: spin-ring 4s linear infinite;
+            display: flex; align-items: center; justify-content: center;
+        }
+        @keyframes spin-ring {
+            from { filter: drop-shadow(0 0 8px rgba(220,38,38,0.7)); }
+            50%  { filter: drop-shadow(0 0 22px rgba(245,158,11,0.9)); }
+            to   { filter: drop-shadow(0 0 8px rgba(220,38,38,0.7)); }
+        }
+        .avatar-img {
+            width: 138px; height: 138px; border-radius: 50%;
+            object-fit: cover; border: 3px solid #000;
+        }
+        .live-dot {
+            position: absolute; bottom: 8px; right: 8px;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #22c55e;
+            border: 2px solid #000;
+            display: none;
+        }
+        .live-dot.active { display: block; animation: pulse-dot 1.4s ease-in-out infinite; }
+        @keyframes pulse-dot {
+            0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+            50%      { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
         }
 
-        .hero-content h1 {
-            font-size: 56px;
-            margin-bottom: 15px;
-            background: linear-gradient(45deg, #dc2626, #f59e0b, #059669);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .profile-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 64px; font-weight: 700;
+            background: linear-gradient(45deg, var(--red), var(--amber), #fff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            line-height: 1; margin-bottom: 12px;
         }
-
-        .hero-content p {
-            font-size: 16px;
-            line-height: 1.6;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            color: #ccc;
+        .profile-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--red), var(--amber));
+            color: #fff; font-size: 11px; font-weight: 700;
+            padding: 3px 12px; border-radius: 20px;
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 20px;
         }
-
-        .hero-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .profile-bio {
+            font-size: 15px; line-height: 1.75; color: #bbb;
+            max-width: 520px; margin: 0 auto 32px;
         }
+        .profile-bio strong { color: #fff; }
 
-        .cta-button {
-            padding: 12px 30px;
-            background: linear-gradient(45deg, #dc2626, #f59e0b);
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            border: 2px solid #fff;
+        /* Social Buttons */
+        .social-buttons {
+            display: flex; gap: 10px; justify-content: center;
+            flex-wrap: wrap; margin-bottom: 12px;
+        }
+        .social-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 20px; border-radius: 50px;
+            text-decoration: none; font-weight: 600; font-size: 13px;
+            letter-spacing: .5px; transition: all .25s;
+            border: none; cursor: pointer;
+        }
+        .social-btn:hover { transform: translateY(-3px); filter: brightness(1.15); }
+        .social-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .btn-yt    { background: #FF0000; color: #fff; }
+        .btn-twitch { background: var(--purple); color: #fff; }
+        .btn-tiktok { background: #010101; color: #fff; border: 1px solid #333; }
+        .btn-discord { background: var(--discord); color: #fff; }
+        .btn-x     { background: #1a1a1a; color: #fff; border: 1px solid #444; }
+
+        /* Tabs */
+        .content-hub {
+            padding: 0 24px 80px;
+            max-width: 1300px; margin: 0 auto;
+        }
+        .tab-bar {
+            display: flex; gap: 4px; justify-content: center;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 32px; flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 12px 28px;
+            background: none; border: none; color: #888;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 17px; font-weight: 600;
+            cursor: pointer; letter-spacing: 1px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-            font-size: 14px;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all .2s;
         }
+        .tab-btn:hover { color: #ddd; }
+        .tab-btn.active { color: #fff; border-bottom-color: var(--red); }
 
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.6);
-        }
-
-        .cta-secondary {
-            background: transparent;
-            border: 3px solid #059669;
-        }
-
-        /* Sections */
-        section {
-            padding: 60px 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            font-size: 36px;
-            margin-bottom: 30px;
-            text-align: center;
-            background: linear-gradient(45deg, #dc2626, #f59e0b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Featured Video */
-        .featured-video {
-            margin-bottom: 40px;
-            border: 3px solid #dc2626;
-            border-radius: 10px;
-            overflow: hidden;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .featured-video iframe {
-            width: 100%;
-            height: 450px;
-        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
         /* Video Grid */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 18px;
         }
-
+        .shorts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 18px;
+        }
         .video-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(220, 38, 38, 0.3);
-            border-left: 4px solid #dc2626;
-            transition: all 0.3s;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px; overflow: hidden;
+            transition: all .3s; cursor: pointer;
         }
-
         .video-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.4);
+            transform: translateY(-6px);
+            border-color: var(--red);
+            box-shadow: 0 12px 32px rgba(220,38,38,0.35);
         }
-
-        .video-thumbnail {
-            width: 100%;
-            height: 160px;
+        .video-card a { text-decoration: none; color: inherit; display: block; }
+        .thumb-wrap { position: relative; }
+        .video-thumb {
+            width: 100%; aspect-ratio: 16/9;
             background: linear-gradient(135deg, #1a0a1f, #0f0a1a);
+            object-fit: cover; display: block;
         }
-
-        .video-info {
-            padding: 15px;
+        .short-thumb {
+            width: 100%; aspect-ratio: 9/16;
+            background: linear-gradient(135deg, #1a0a1f, #0f0a1a);
+            object-fit: cover; display: block;
         }
-
+        .live-badge {
+            position: absolute; top: 8px; left: 8px;
+            background: var(--red); color: #fff;
+            font-size: 11px; font-weight: 700;
+            padding: 2px 8px; border-radius: 4px;
+            letter-spacing: 1px;
+        }
+        .video-info { padding: 12px 14px; }
         .video-info h3 {
+            font-size: 14px; color: #fff;
+            line-height: 1.4; margin-bottom: 6px;
+            display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .video-info p { color: #888; font-size: 12px; }
+
+        /* Loading state */
+        .loading {
+            text-align: center; padding: 60px 20px; color: #666;
             font-size: 15px;
-            margin-bottom: 8px;
-            color: #fff;
-            line-height: 1.3;
         }
-
-        .video-info p {
-            color: #aaa;
-            font-size: 13px;
+        .loading::after {
+            content: ''; display: block; width: 36px; height: 36px;
+            border: 3px solid #333; border-top-color: var(--red);
+            border-radius: 50%; margin: 16px auto 0;
+            animation: spin .8s linear infinite;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Newsletter */
-        .newsletter-container {
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(245, 158, 11, 0.1));
-            border: 3px solid #dc2626;
-            padding: 40px 30px;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
+        /* Community placeholder */
+        .community-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 56px 32px; text-align: center;
+            max-width: 560px; margin: 0 auto;
         }
-
-        .newsletter-icon {
-            font-size: 60px;
-            margin-bottom: 15px;
+        .community-card .icon { font-size: 56px; margin-bottom: 18px; }
+        .community-card h3 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 28px; margin-bottom: 12px;
+            background: linear-gradient(45deg, var(--red), var(--amber));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .newsletter-container h2 {
-            margin-bottom: 15px;
-            font-size: 32px;
-        }
-
-        .newsletter-container p {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: #ccc;
-        }
-
-        .newsletter-form {
-            display: flex;
-            gap: 10px;
-            max-width: 500px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .newsletter-input {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px 20px;
-            border: 2px solid #dc2626;
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            font-size: 14px;
-        }
-
-        .newsletter-button {
-            padding: 12px 30px;
-            background: linear-gradient(45deg, #dc2626, #f59e0b);
-            color: #fff;
-            border: 2px solid #fff;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Discord */
-        .discord-container {
-            background: rgba(88, 101, 242, 0.1);
-            border: 3px solid #5865f2;
-            padding: 40px 30px;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .discord-icon {
-            font-size: 60px;
-            margin-bottom: 15px;
-        }
-
-        .discord-container h2 {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        .discord-container p {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: #ccc;
-        }
-
-        .discord-button {
-            padding: 12px 40px;
-            background: #5865f2;
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            border: 2px solid #fff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        .community-card p { color: #aaa; margin-bottom: 24px; line-height: 1.6; }
+        .community-link {
             display: inline-block;
-            transition: all 0.3s;
-            font-size: 14px;
+            padding: 12px 32px; border-radius: 50px;
+            background: linear-gradient(45deg, var(--red), var(--amber));
+            color: #fff; font-weight: 700; text-decoration: none;
+            font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
+            transition: all .25s;
         }
+        .community-link:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(220,38,38,0.4); }
 
-        .discord-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(88, 101, 242, 0.6);
+        /* No content message */
+        .no-content {
+            text-align: center; padding: 60px 20px; color: #666;
+            font-size: 15px;
         }
+        .no-content a { color: var(--red); }
 
         /* Footer */
         footer {
-            text-align: center;
-            padding: 40px;
-            background: rgba(10, 5, 8, 0.9);
-            border-top: 4px solid #dc2626;
-            color: #888;
+            text-align: center; padding: 40px 24px;
+            background: rgba(10,5,8,0.92);
+            border-top: 2px solid var(--red);
+            color: #555;
         }
-
-        .social-links {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+        .footer-socials {
+            display: flex; justify-content: center; gap: 14px;
+            margin: 20px 0 16px; flex-wrap: wrap;
         }
-
-        .social-links a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 24px;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid #dc2626;
-            transition: all 0.3s;
+        .footer-social {
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; text-decoration: none; font-size: 20px;
+            transition: all .25s;
         }
+        .footer-social:hover { transform: translateY(-4px); border-color: var(--red); background: rgba(220,38,38,0.15); }
+        footer p { font-size: 13px; }
 
-        .social-links a:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.4);
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .logo-container {
-                justify-content: center;
-            }
-
-            .logo-img {
-                width: 40px;
-                height: 40px;
-            }
-
-            .logo {
-                font-size: 22px;
-            }
-
-            nav {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 10px;
-            }
-
-            nav a {
-                margin-left: 0;
-                font-size: 13px;
-                padding: 5px 10px;
-            }
-
-            .hero {
-                min-height: 60vh;
-                padding: 100px 20px 30px;
-            }
-
-            .hero-content h1 {
-                font-size: 32px;
-            }
-
-            .hero-content p {
-                font-size: 14px;
-                line-height: 1.5;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                width: 100%;
-                max-width: 300px;
-                margin: 0 auto;
-            }
-
-            .cta-button {
-                width: 100%;
-                padding: 12px 20px;
-                font-size: 13px;
-            }
-
-            section {
-                padding: 40px 20px;
-            }
-
-            h2 {
-                font-size: 28px;
-                margin-bottom: 20px;
-            }
-
-            .featured-video {
-                margin-bottom: 30px;
-            }
-
-            .featured-video iframe {
-                height: 250px;
-            }
-
-            .video-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .video-thumbnail {
-                height: 180px;
-            }
-
-            .newsletter-container,
-            .discord-container {
-                padding: 30px 20px;
-            }
-
-            .newsletter-icon,
-            .discord-icon {
-                font-size: 50px;
-            }
-
-            .newsletter-container h2,
-            .discord-container h2 {
-                font-size: 24px;
-            }
-
-            .newsletter-form {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .newsletter-input {
-                min-width: 100%;
-            }
-
-            .newsletter-button,
-            .discord-button {
-                width: 100%;
-            }
-
-            footer {
-                padding: 30px 20px;
-            }
-
-            .social-links a {
-                width: 45px;
-                height: 45px;
-                font-size: 20px;
-            }
+            header { padding: 12px 16px; }
+            .profile-name { font-size: 44px; }
+            .content-hub { padding: 0 16px 60px; }
+            .tab-btn { padding: 10px 16px; font-size: 14px; }
+            nav a { padding: 5px 10px; font-size: 13px; }
         }
-
         @media (max-width: 480px) {
-            .hero-content h1 {
-                font-size: 28px;
-            }
-
-            h2 {
-                font-size: 24px;
-            }
-
-            .video-info h3 {
-                font-size: 14px;
-            }
-
-            .featured-video iframe {
-                height: 200px;
-            }
+            .profile-name { font-size: 36px; }
+            .social-buttons { gap: 8px; }
+            .social-btn { padding: 8px 14px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="snowflakes">
-        <div class="snowflake">❅</div>
-        <div class="snowflake">❆</div>
-        <div class="snowflake">❅</div>
-        <div class="snowflake">❆</div>
-        <div class="snowflake">❅</div>
-        <div class="snowflake">❆</div>
-        <div class="snowflake">❅</div>
-        <div class="snowflake">❆</div>
-        <div class="snowflake">❅</div>
-        <div class="snowflake">❆</div>
-    </div>
 
-    <div class="bg-container">
-        <img class="bg-gif" src="https://i.imgur.com/vF6AZki.gif" alt="Japanese Street">
-    </div>
+<div class="snowflakes">
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+</div>
 
-    <header>
-        <div class="logo-container">
-            <a href="#home" class="logo-link">
-                <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy Logo" class="logo-img">
-                <div class="logo">LoveFlappy</div>
+<div class="bg-container">
+    <img class="bg-gif" src="https://i.imgur.com/vF6AZki.gif" alt="">
+</div>
+
+<header>
+    <a href="index.html" class="logo-link">
+        <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="logo-img">
+        <span class="logo-text">LoveFlappy</span>
+    </a>
+    <nav>
+        <a href="index.html" class="active">Home</a>
+        <a href="streams.html" class="nav-streams">🔴 Streams</a>
+    </nav>
+</header>
+
+<!-- Hero / Profile -->
+<div class="hero" id="home">
+    <div class="profile-card">
+        <div class="avatar-wrap">
+            <div class="avatar-ring">
+                <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="avatar-img">
+            </div>
+            <div class="live-dot" id="liveDot"></div>
+        </div>
+
+        <h1 class="profile-name">LoveFlappy</h1>
+        <div class="profile-badge">Content Creator &amp; Gamer</div>
+
+        <p class="profile-bio">
+            🕹️ Content creator, gamer &amp; anime lover.<br>
+            <strong>ADHD-fueled chaos</strong> — topics change spastically!<br>
+            Former Vine AMV editor (Flapjack1237) · I make content when I can.<br>
+            📧 <strong>Business:</strong> Flapjack1238@gmail.com
+        </p>
+
+        <div class="social-buttons">
+            <!-- YouTube -->
+            <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="social-btn btn-yt">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                YouTube
+            </a>
+            <!-- Twitch -->
+            <a href="https://www.twitch.tv/loveflappy" target="_blank" class="social-btn btn-twitch">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.6 6H10v4.5h1.6V6zm4.3 0h-1.6v4.5h1.6V6zM2.4 0L0 2.4V21.6h6V24l2.4-2.4H12l4.8-4.8V0H2.4zm16.8 13.2L16 16.4h-3.6L10 18.8v-2.4H4.8V2.4h14.4v10.8z"/></svg>
+                Twitch
+            </a>
+            <!-- TikTok -->
+            <a href="https://www.tiktok.com/@oflappy" target="_blank" class="social-btn btn-tiktok">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 3a5 5 0 0 1-5-5h-3.4v15.3a2.9 2.9 0 1 1-2-2.8V7.1a6.3 6.3 0 1 0 5.4 6.2V8.6A8.4 8.4 0 0 0 19.6 10V6.6A5 5 0 0 1 16.8 6v-3h2.8z"/></svg>
+                TikTok
+            </a>
+            <!-- Discord -->
+            <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="social-btn btn-discord">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 3a18.8 18.8 0 0 0-4.6-1.4 13 13 0 0 0-.6 1.2 17.4 17.4 0 0 0-5.2 0A13 13 0 0 0 9.3 1.6 18.8 18.8 0 0 0 4.7 3 19.4 19.4 0 0 0 1.6 18.3a19 19 0 0 0 5.7 2.9 14.2 14.2 0 0 0 1.2-2 12.4 12.4 0 0 1-1.9-.9l.5-.4a13.5 13.5 0 0 0 11.6 0l.5.4a12.4 12.4 0 0 1-1.9.9 14.2 14.2 0 0 0 1.2 2 19 19 0 0 0 5.7-2.9A19.4 19.4 0 0 0 20.3 3zM8.7 15.2c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3 2 1 2 2.3-.9 2.3-2 2.3zm6.6 0c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3 2 1 2 2.3-.9 2.3-2 2.3z"/></svg>
+                Discord
+            </a>
+            <!-- X -->
+            <a href="https://x.com/EsotericFlap" target="_blank" class="social-btn btn-x">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.3 2h-3L12 6.3 8.9 2H3l6.5 9.3L3 22h3l3.7-5.3L13.4 22H19l-6.8-9.8L18.3 2z"/></svg>
+                X
             </a>
         </div>
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#videos">Videos</a>
-        </nav>
-    </header>
+    </div>
+</div>
 
-    <div class="hero" id="home">
-        <div class="hero-content">
-            <h1>Welcome to LoveFlappy</h1>
-            <p>
-                I love entertainment! 🧖🏾 🕹️💭<br>
-                ADHD, TOPICS CHANGE SPASTICALLY!<br>
-                ❤️➡️🩵➡️🩷 (Thanks for understanding!)<br>
-                Used to be on vine: AMV Editor. (Flapjack1237)<br>
-                I make content when I can!<br>
-                <strong>Business Email:</strong> Flapjack1238@gmail.com
-            </p>
-            <div class="hero-buttons">
-                <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="cta-button">Subscribe on YouTube</a>
-                <a href="https://x.com/EsotericFlap" target="_blank" class="cta-button cta-secondary">Follow on X</a>
-            </div>
-        </div>
+<!-- Content Hub -->
+<div class="content-hub" id="content">
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('videos')">Videos</button>
+        <button class="tab-btn" onclick="switchTab('livestreams')">Live Streams</button>
+        <button class="tab-btn" onclick="switchTab('shorts')">Shorts</button>
+        <button class="tab-btn" onclick="switchTab('community')">Community</button>
     </div>
 
-    <section id="videos">
-        <h2>Featured Video</h2>
-        <div class="featured-video">
-            <iframe 
-                width="100%" 
-                height="600" 
-                src="https://www.youtube.com/embed/3Kk6eYipVtg?autoplay=1&mute=1&controls=1" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
+    <!-- Videos Tab -->
+    <div class="tab-panel active" id="tab-videos">
+        <div class="loading" id="loadingVideos">Loading latest videos</div>
+        <div class="video-grid" id="videoGrid" style="display:none;"></div>
+    </div>
+
+    <!-- Live Streams Tab -->
+    <div class="tab-panel" id="tab-livestreams">
+        <div class="loading" id="loadingStreams">Loading streams</div>
+        <div class="video-grid" id="streamsGrid" style="display:none;"></div>
+    </div>
+
+    <!-- Shorts Tab -->
+    <div class="tab-panel" id="tab-shorts">
+        <div class="loading" id="loadingShorts">Loading shorts</div>
+        <div class="shorts-grid" id="shortsGrid" style="display:none;"></div>
+    </div>
+
+    <!-- Community Tab -->
+    <div class="tab-panel" id="tab-community">
+        <div class="community-card">
+            <div class="icon">💬</div>
+            <h3>Community Posts</h3>
+            <p>Community posts aren't available through the YouTube API — head directly to the YouTube Community tab to see all posts, polls, and updates.</p>
+            <a href="https://www.youtube.com/@LoveFlappy/community" target="_blank" class="community-link">View Community Posts</a>
         </div>
+    </div>
+</div>
 
-        <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px;">
-            <h2 style="margin: 0;">All Videos</h2>
-        </div>
+<footer>
+    <div class="footer-socials">
+        <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="footer-social">📺</a>
+        <a href="https://www.twitch.tv/loveflappy" target="_blank" class="footer-social">🎮</a>
+        <a href="https://www.tiktok.com/@oflappy" target="_blank" class="footer-social">🎵</a>
+        <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="footer-social">💬</a>
+        <a href="https://x.com/EsotericFlap" target="_blank" class="footer-social">🐦</a>
+    </div>
+    <p>&copy; 2025 LoveFlappy. All rights reserved.</p>
+</footer>
 
-        <div class="video-grid" id="videoGrid">
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Top 10 Anime of 2024</h3>
-                    <p>Posted 2 days ago • 250K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Attack on Titan Theory</h3>
-                    <p>Posted 5 days ago • 180K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Demon Slayer Season 4</h3>
-                    <p>Posted 1 week ago • 320K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Anime Openings That Hit Different</h3>
-                    <p>Posted 1 week ago • 420K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>My Anime Room Tour 2024</h3>
-                    <p>Posted 2 weeks ago • 280K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Crunchyroll Exclusives Review</h3>
-                    <p>Posted 2 weeks ago • 195K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Best Anime Fights Compilation</h3>
-                    <p>Posted 3 weeks ago • 510K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Anime News Weekly Roundup</h3>
-                    <p>Posted 3 weeks ago • 150K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Manga vs Anime Comparison</h3>
-                    <p>Posted 1 month ago • 380K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Voice Actor Interviews</h3>
-                    <p>Posted 1 month ago • 220K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Anime Convention Vlog</h3>
-                    <p>Posted 1 month ago • 290K views</p>
-                </div>
-            </div>
-            <div class="video-card">
-                <div class="video-thumbnail"></div>
-                <div class="video-info">
-                    <h3>Studio Ghibli Deep Dive</h3>
-                    <p>Posted 2 months ago • 450K views</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<script>
+    const API_KEY = 'AIzaSyAf9Fd0eEUxYlXIwKRinde1WGBWnsP78Fk';
+    const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
+    const loaded = { videos: false, livestreams: false, shorts: false };
 
-    <footer>
-        <p>&copy; 2024 LoveFlappy. All rights reserved.</p>
-        <div class="social-links">
-            <a href="https://www.youtube.com/@LoveFlappy" target="_blank">📺</a>
-            <a href="https://x.com/EsotericFlap" target="_blank">🐦</a>
-            <a href="https://discord.gg/pnRCbEAtTk" target="_blank">💬</a>
-        </div>
-    </footer>
+    function switchTab(name) {
+        document.querySelectorAll('.tab-btn').forEach((b,i) => {
+            const tabs = ['videos','livestreams','shorts','community'];
+            b.classList.toggle('active', tabs[i] === name);
+        });
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
 
-    <script>
-        // YouTube API Configuration
-        const YOUTUBE_API_KEY = 'AIzaSyAf9Fd0eEUxYlXIwKRinde1WGBWnsP78Fk';
-        const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
+        if (!loaded[name]) {
+            if (name === 'videos')      loadVideos();
+            if (name === 'livestreams') loadStreams();
+            if (name === 'shorts')      loadShorts();
+        }
+    }
 
-        async function loadLatestVideos() {
-            try {
-                // Use YouTube Data API v3
-                const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=6&type=video`;
-                
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                
-                if (data.error) {
-                    console.error('YouTube API Error:', data.error.message);
-                    throw new Error(data.error.message);
-                }
-                
-                if (data.items && data.items.length > 0) {
-                    const videoGrid = document.querySelector('.video-grid');
-                    videoGrid.innerHTML = '';
-                    
-                    data.items.forEach(item => {
-                        const videoId = item.id.videoId;
-                        const title = item.snippet.title;
-                        const thumbnail = item.snippet.thumbnails.medium.url;
-                        const published = new Date(item.snippet.publishedAt);
-                        const timeAgo = getTimeAgo(published);
-                        
-                        const videoCard = document.createElement('div');
-                        videoCard.className = 'video-card';
-                        videoCard.innerHTML = `
-                            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" style="text-decoration: none; color: inherit;">
-                                <div class="video-thumbnail" style="background-image: url('${thumbnail}'); background-size: cover; background-position: center;"></div>
-                                <div class="video-info">
-                                    <h3>${title}</h3>
-                                    <p>${timeAgo}</p>
-                                </div>
-                            </a>
-                        `;
-                        
-                        videoGrid.appendChild(videoCard);
-                    });
-                    
-                    console.log('✅ Successfully loaded', data.items.length, 'videos from YouTube API');
-                } else {
-                    console.log('📝 No videos found, keeping placeholders');
-                }
-            } catch (error) {
-                console.error('Error loading YouTube videos:', error);
-                console.log('📝 Using fallback - keeping placeholder videos');
+    function timeAgo(date) {
+        const s = Math.floor((Date.now() - new Date(date)) / 1000);
+        if (s < 60)     return s + 's ago';
+        if (s < 3600)   return Math.floor(s/60) + 'm ago';
+        if (s < 86400)  return Math.floor(s/3600) + 'h ago';
+        if (s < 2592000) return Math.floor(s/86400) + 'd ago';
+        if (s < 31536000) return Math.floor(s/2592000) + ' months ago';
+        return Math.floor(s/31536000) + ' years ago';
+    }
+
+    function makeCard(videoId, title, thumb, meta, isLive, isShort) {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.innerHTML = `
+            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
+                <div class="thumb-wrap">
+                    <img class="${isShort ? 'short-thumb' : 'video-thumb'}" src="${thumb}" alt="${title}" loading="lazy">
+                    ${isLive ? '<span class="live-badge">🔴 LIVE</span>' : ''}
+                </div>
+                <div class="video-info">
+                    <h3>${title}</h3>
+                    <p>${meta}</p>
+                </div>
+            </a>`;
+        return card;
+    }
+
+    async function fetchYT(url) {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+        return data;
+    }
+
+    async function loadVideos() {
+        loaded.videos = true;
+        try {
+            const data = await fetchYT(
+                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=12&type=video`
+            );
+            const grid = document.getElementById('videoGrid');
+            grid.innerHTML = '';
+            (data.items || []).forEach(item => {
+                grid.appendChild(makeCard(
+                    item.id.videoId,
+                    item.snippet.title,
+                    item.snippet.thumbnails.medium.url,
+                    timeAgo(item.snippet.publishedAt),
+                    false, false
+                ));
+            });
+            document.getElementById('loadingVideos').style.display = 'none';
+            grid.style.display = 'grid';
+        } catch(e) {
+            document.getElementById('loadingVideos').innerHTML = '<p class="no-content">Could not load videos. <a href="https://www.youtube.com/@LoveFlappy/videos" target="_blank">View on YouTube →</a></p>';
+            document.getElementById('loadingVideos').classList.remove('loading');
+        }
+    }
+
+    async function loadStreams() {
+        loaded.livestreams = true;
+        const grid = document.getElementById('streamsGrid');
+        grid.innerHTML = '';
+        try {
+            // Try live first
+            const live = await fetchYT(
+                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=live&maxResults=6`
+            );
+            let items = live.items || [];
+            const isLive = items.length > 0;
+
+            if (!isLive) {
+                const past = await fetchYT(
+                    `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=completed&order=date&maxResults=8`
+                );
+                items = past.items || [];
             }
-        }
 
-        function getTimeAgo(date) {
-            const seconds = Math.floor((new Date() - date) / 1000);
-            
-            let interval = seconds / 31536000;
-            if (interval > 1) return Math.floor(interval) + " years ago";
-            
-            interval = seconds / 2592000;
-            if (interval > 1) return Math.floor(interval) + " months ago";
-            
-            interval = seconds / 86400;
-            if (interval > 1) return Math.floor(interval) + " days ago";
-            
-            interval = seconds / 3600;
-            if (interval > 1) return Math.floor(interval) + " hours ago";
-            
-            interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + " minutes ago";
-            
-            return Math.floor(seconds) + " seconds ago";
+            if (items.length === 0) {
+                grid.innerHTML = '<div class="no-content">No streams found. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank">View on YouTube →</a></div>';
+                grid.style.display = 'block';
+            } else {
+                items.forEach(item => {
+                    grid.appendChild(makeCard(
+                        item.id.videoId,
+                        item.snippet.title,
+                        item.snippet.thumbnails.medium.url,
+                        isLive ? '🔴 Live now' : timeAgo(item.snippet.publishedAt),
+                        isLive, false
+                    ));
+                });
+                grid.style.display = 'grid';
+            }
+        } catch(e) {
+            grid.innerHTML = '<div class="no-content">Could not load streams. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank">View on YouTube →</a></div>';
+            grid.style.display = 'block';
         }
+        document.getElementById('loadingStreams').style.display = 'none';
+    }
 
-        // Load videos when page loads
-        window.addEventListener('load', loadLatestVideos);
-    </script>
+    async function loadShorts() {
+        loaded.shorts = true;
+        try {
+            const data = await fetchYT(
+                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&videoDuration=short&order=date&maxResults=18`
+            );
+            const grid = document.getElementById('shortsGrid');
+            grid.innerHTML = '';
+            (data.items || []).forEach(item => {
+                grid.appendChild(makeCard(
+                    item.id.videoId,
+                    item.snippet.title,
+                    item.snippet.thumbnails.medium.url,
+                    timeAgo(item.snippet.publishedAt),
+                    false, true
+                ));
+            });
+            document.getElementById('loadingShorts').style.display = 'none';
+            grid.style.display = 'grid';
+        } catch(e) {
+            document.getElementById('loadingShorts').innerHTML = '<p class="no-content">Could not load shorts. <a href="https://www.youtube.com/@LoveFlappy/shorts" target="_blank">View on YouTube →</a></p>';
+            document.getElementById('loadingShorts').classList.remove('loading');
+        }
+    }
+
+    // Check YouTube live status for dot indicator
+    async function checkLiveStatus() {
+        try {
+            const data = await fetchYT(
+                `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${CHANNEL_ID}&part=snippet`
+            );
+            const ch = data.items?.[0];
+            if (ch?.snippet?.liveBroadcastContent === 'live') {
+                document.getElementById('liveDot').classList.add('active');
+            }
+        } catch(e) {}
+    }
+
+    // Boot
+    loadVideos();
+    checkLiveStatus();
+</script>
 </body>
 </html>

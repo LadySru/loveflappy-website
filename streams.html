@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoveFlappy | Live Streams</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --red: #dc2626;
+            --amber: #f59e0b;
+            --purple: #9146ff;
+            --discord: #5865f2;
+            --dark: #0a0508;
+            --card: rgba(255,255,255,0.04);
+            --border: rgba(220,38,38,0.35);
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Background */
+        .bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .bg-gif {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            min-width: 100%; min-height: 100%;
+            object-fit: cover;
+        }
+        .bg-container::after {
+            content: ''; position: absolute; inset: 0;
+            background: rgba(0,0,0,0.72); z-index: 1;
+        }
+
+        /* Snowfall */
+        .snowflakes {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 9999; overflow: hidden;
+        }
+        .snowflake {
+            position: absolute; top: -10px; color: #fff;
+            font-size: 1em; opacity: 0.7;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0%   { top: -10%; opacity: 0.7; }
+            100% { top: 105%; opacity: 0.2; }
+        }
+        .snowflake:nth-child(1)  { left: 2%;  animation-duration: 8s; }
+        .snowflake:nth-child(2)  { left: 15%; animation-duration: 10s; animation-delay: 1s; }
+        .snowflake:nth-child(3)  { left: 30%; animation-duration: 12s; animation-delay: 2s; }
+        .snowflake:nth-child(4)  { left: 45%; animation-duration: 9s; }
+        .snowflake:nth-child(5)  { left: 60%; animation-duration: 11s; animation-delay: 1s; }
+        .snowflake:nth-child(6)  { left: 75%; animation-duration: 10s; animation-delay: 2s; }
+        .snowflake:nth-child(7)  { left: 88%; animation-duration: 13s; }
+        .snowflake:nth-child(8)  { left: 10%; animation-duration: 9s;  animation-delay: 3s; }
+        .snowflake:nth-child(9)  { left: 25%; animation-duration: 11s; }
+        .snowflake:nth-child(10) { left: 40%; animation-duration: 10s; animation-delay: 1.5s; }
+
+        /* Header */
+        header {
+            position: fixed; top: 0; width: 100%;
+            padding: 14px 48px;
+            background: rgba(10,5,8,0.92);
+            backdrop-filter: blur(14px);
+            z-index: 1000;
+            border-bottom: 2px solid var(--red);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img {
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 2px solid var(--red);
+            box-shadow: 0 0 14px rgba(220,38,38,0.6);
+            transition: box-shadow .3s;
+        }
+        .logo-img:hover { box-shadow: 0 0 28px rgba(220,38,38,1); }
+        .logo-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 26px; font-weight: 700;
+            background: linear-gradient(45deg, var(--red), var(--amber));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+        nav { display: flex; gap: 8px; align-items: center; }
+        nav a {
+            color: #ccc; text-decoration: none;
+            padding: 6px 16px; border-radius: 4px;
+            font-size: 14px; font-weight: 500;
+            transition: all .25s; letter-spacing: .5px;
+        }
+        nav a:hover { color: #fff; background: rgba(220,38,38,0.18); }
+        .nav-streams {
+            background: linear-gradient(45deg, var(--red), var(--amber)) !important;
+            color: #fff !important;
+            font-weight: 700 !important;
+            padding: 6px 18px !important;
+        }
+
+        /* Page layout */
+        .page-wrap {
+            padding: 100px 24px 80px;
+            max-width: 1400px; margin: 0 auto;
+        }
+        .page-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 42px; font-weight: 700; text-align: center;
+            background: linear-gradient(45deg, var(--red), var(--amber));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .page-sub {
+            text-align: center; color: #777; margin-bottom: 48px; font-size: 15px;
+        }
+
+        /* Stream columns */
+        .streams-grid {
+            display: grid;
+            grid-template-columns: 55fr 45fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* Stream card */
+        .stream-card {
+            background: var(--card);
+            border-radius: 14px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .stream-card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .platform-label {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 22px; font-weight: 700; letter-spacing: 1px;
+        }
+        .platform-label svg { width: 24px; height: 24px; flex-shrink: 0; }
+        .yt-label  { color: #FF4444; }
+        .twitch-label { color: var(--purple); }
+
+        .status-badge {
+            font-size: 12px; font-weight: 700; letter-spacing: 1px;
+            padding: 4px 12px; border-radius: 20px;
+        }
+        .badge-live    { background: rgba(220,38,38,0.2); color: #ff4444; border: 1px solid #dc2626; }
+        .badge-offline { background: rgba(255,255,255,0.07); color: #888; border: 1px solid #333; }
+        .badge-past    { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.4); }
+
+        .player-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #0d0d0d;
+        }
+        .player-wrap iframe {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            border: none;
+        }
+        .offline-placeholder {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: #0d0d0d; color: #555;
+            font-size: 14px; gap: 12px;
+        }
+        .offline-icon { font-size: 48px; opacity: .5; }
+
+        .stream-footer {
+            padding: 14px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 8px;
+        }
+        .stream-title { font-size: 14px; color: #ccc; flex: 1; }
+        .stream-link {
+            font-size: 13px; font-weight: 600;
+            padding: 6px 16px; border-radius: 50px;
+            text-decoration: none; transition: all .25s;
+            white-space: nowrap;
+        }
+        .link-yt     { background: rgba(255,0,0,0.15); color: #ff4444; border: 1px solid rgba(255,0,0,0.3); }
+        .link-yt:hover { background: rgba(255,0,0,0.3); }
+        .link-twitch { background: rgba(145,70,255,0.15); color: var(--purple); border: 1px solid rgba(145,70,255,0.3); }
+        .link-twitch:hover { background: rgba(145,70,255,0.3); }
+        .link-vods   { background: rgba(255,255,255,0.07); color: #aaa; border: 1px solid #333; font-size: 12px; }
+        .link-vods:hover { color: #fff; background: rgba(255,255,255,0.12); }
+
+        /* Past broadcasts section */
+        .past-section {
+            margin-top: 48px;
+        }
+        .section-heading {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 28px; font-weight: 700;
+            background: linear-gradient(45deg, var(--red), var(--amber));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .video-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px; overflow: hidden;
+            transition: all .3s;
+        }
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--red);
+            box-shadow: 0 10px 28px rgba(220,38,38,0.3);
+        }
+        .video-card a { text-decoration: none; color: inherit; display: block; }
+        .video-thumb {
+            width: 100%; aspect-ratio: 16/9;
+            object-fit: cover; display: block;
+            background: #111;
+        }
+        .video-info { padding: 12px 14px; }
+        .video-info h3 {
+            font-size: 14px; color: #fff; line-height: 1.4;
+            margin-bottom: 5px;
+            display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .video-info p { color: #777; font-size: 12px; }
+
+        /* Loading */
+        .loading {
+            text-align: center; padding: 40px 20px; color: #555; font-size: 14px;
+        }
+        .loading::after {
+            content: ''; display: block; width: 30px; height: 30px;
+            border: 3px solid #222; border-top-color: var(--red);
+            border-radius: 50%; margin: 12px auto 0;
+            animation: spin .8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 40px 24px;
+            background: rgba(10,5,8,0.92);
+            border-top: 2px solid var(--red);
+            color: #555;
+        }
+        .footer-socials {
+            display: flex; justify-content: center; gap: 14px;
+            margin: 20px 0 16px; flex-wrap: wrap;
+        }
+        .footer-social {
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; text-decoration: none; font-size: 20px;
+            transition: all .25s;
+        }
+        .footer-social:hover { transform: translateY(-4px); border-color: var(--red); background: rgba(220,38,38,0.15); }
+        footer p { font-size: 13px; }
+
+        @media (max-width: 900px) {
+            .streams-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 12px 16px; }
+            .page-wrap { padding: 90px 16px 60px; }
+            .page-title { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="snowflakes">
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+    <div class="snowflake">❅</div><div class="snowflake">❆</div>
+</div>
+
+<div class="bg-container">
+    <img class="bg-gif" src="https://i.imgur.com/vF6AZki.gif" alt="">
+</div>
+
+<header>
+    <a href="index.html" class="logo-link">
+        <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="logo-img">
+        <span class="logo-text">LoveFlappy</span>
+    </a>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="streams.html" class="nav-streams">🔴 Streams</a>
+    </nav>
+</header>
+
+<div class="page-wrap">
+    <h1 class="page-title">🔴 Live Streams</h1>
+    <p class="page-sub">Watch live on YouTube &amp; Twitch — or catch up on past broadcasts.</p>
+
+    <div class="streams-grid">
+        <!-- YouTube -->
+        <div class="stream-card">
+            <div class="stream-card-header">
+                <div class="platform-label yt-label">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                    YouTube
+                </div>
+                <span class="status-badge badge-offline" id="ytBadge">Checking...</span>
+            </div>
+            <div class="player-wrap">
+                <div class="offline-placeholder" id="ytPlaceholder">
+                    <div class="offline-icon">📺</div>
+                    <p>Loading stream...</p>
+                </div>
+                <iframe id="ytFrame" style="display:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="stream-footer">
+                <span class="stream-title" id="ytTitle"></span>
+                <a href="https://www.youtube.com/@LoveFlappy/live" target="_blank" class="stream-link link-yt">Watch on YouTube ↗</a>
+            </div>
+        </div>
+
+        <!-- Twitch -->
+        <div class="stream-card">
+            <div class="stream-card-header">
+                <div class="platform-label twitch-label">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.6 6H10v4.5h1.6V6zm4.3 0h-1.6v4.5h1.6V6zM2.4 0L0 2.4V21.6h6V24l2.4-2.4H12l4.8-4.8V0H2.4zm16.8 13.2L16 16.4h-3.6L10 18.8v-2.4H4.8V2.4h14.4v10.8z"/></svg>
+                    Twitch
+                </div>
+                <span class="status-badge badge-offline" id="twitchBadge">Live or Offline</span>
+            </div>
+            <div class="player-wrap">
+                <iframe id="twitchFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            </div>
+            <div class="stream-footer">
+                <span class="stream-title">twitch.tv/loveflappy</span>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <a href="https://www.twitch.tv/loveflappy" target="_blank" class="stream-link link-twitch">Open Twitch ↗</a>
+                    <a href="https://www.twitch.tv/loveflappy/videos" target="_blank" class="stream-link link-vods">Past VODs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Past YouTube Streams -->
+    <div class="past-section">
+        <h2 class="section-heading">Past YouTube Streams</h2>
+        <div class="loading" id="loadingPast">Loading past broadcasts</div>
+        <div class="video-grid" id="pastGrid" style="display:none;"></div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-socials">
+        <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="footer-social">📺</a>
+        <a href="https://www.twitch.tv/loveflappy" target="_blank" class="footer-social">🎮</a>
+        <a href="https://www.tiktok.com/@oflappy" target="_blank" class="footer-social">🎵</a>
+        <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="footer-social">💬</a>
+        <a href="https://x.com/EsotericFlap" target="_blank" class="footer-social">🐦</a>
+    </div>
+    <p>&copy; 2025 LoveFlappy. All rights reserved.</p>
+</footer>
+
+<script>
+    const API_KEY = 'AIzaSyAf9Fd0eEUxYlXIwKRinde1WGBWnsP78Fk';
+    const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
+    const TWITCH_CHANNEL = 'loveflappy';
+
+    function timeAgo(date) {
+        const s = Math.floor((Date.now() - new Date(date)) / 1000);
+        if (s < 60)     return s + 's ago';
+        if (s < 3600)   return Math.floor(s/60) + 'm ago';
+        if (s < 86400)  return Math.floor(s/3600) + 'h ago';
+        if (s < 2592000) return Math.floor(s/86400) + 'd ago';
+        if (s < 31536000) return Math.floor(s/2592000) + ' months ago';
+        return Math.floor(s/31536000) + ' years ago';
+    }
+
+    async function fetchYT(url) {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+        return data;
+    }
+
+    async function setupYouTube() {
+        const frame = document.getElementById('ytFrame');
+        const placeholder = document.getElementById('ytPlaceholder');
+        const badge = document.getElementById('ytBadge');
+        const titleEl = document.getElementById('ytTitle');
+
+        try {
+            // Check if live
+            const liveData = await fetchYT(
+                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=live&maxResults=1`
+            );
+
+            if (liveData.items && liveData.items.length > 0) {
+                const vid = liveData.items[0];
+                frame.src = `https://www.youtube.com/embed/${vid.id.videoId}?autoplay=1&mute=1`;
+                frame.style.display = 'block';
+                placeholder.style.display = 'none';
+                badge.textContent = '🔴 LIVE NOW';
+                badge.className = 'status-badge badge-live';
+                titleEl.textContent = vid.snippet.title;
+            } else {
+                // Fall back to most recent completed stream
+                const pastData = await fetchYT(
+                    `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=completed&order=date&maxResults=1`
+                );
+                if (pastData.items && pastData.items.length > 0) {
+                    const vid = pastData.items[0];
+                    frame.src = `https://www.youtube.com/embed/${vid.id.videoId}`;
+                    frame.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    badge.textContent = 'Last Stream';
+                    badge.className = 'status-badge badge-past';
+                    titleEl.textContent = vid.snippet.title + ' · ' + timeAgo(vid.snippet.publishedAt);
+                } else {
+                    placeholder.innerHTML = '<div class="offline-icon">📺</div><p>Not currently live</p>';
+                    badge.textContent = 'Offline';
+                    badge.className = 'status-badge badge-offline';
+                }
+            }
+        } catch(e) {
+            placeholder.innerHTML = '<div class="offline-icon">📺</div><p>Could not load stream</p>';
+            badge.textContent = 'Error';
+            badge.className = 'status-badge badge-offline';
+        }
+    }
+
+    function setupTwitch() {
+        const parent = window.location.hostname || 'localhost';
+        const frame = document.getElementById('twitchFrame');
+        frame.src = `https://player.twitch.tv/?channel=${TWITCH_CHANNEL}&parent=${parent}&autoplay=false`;
+
+        // Twitch handles live/offline display natively in the embed
+        document.getElementById('twitchBadge').textContent = 'Auto-detects Live';
+        document.getElementById('twitchBadge').className = 'status-badge badge-offline';
+    }
+
+    async function loadPastStreams() {
+        try {
+            const data = await fetchYT(
+                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=completed&order=date&maxResults=8`
+            );
+            const grid = document.getElementById('pastGrid');
+            grid.innerHTML = '';
+            const items = data.items || [];
+
+            if (items.length === 0) {
+                grid.innerHTML = '<p style="color:#666;font-size:14px;">No past streams found.</p>';
+                grid.style.display = 'block';
+            } else {
+                items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'video-card';
+                    card.innerHTML = `
+                        <a href="https://www.youtube.com/watch?v=${item.id.videoId}" target="_blank">
+                            <img class="video-thumb" src="${item.snippet.thumbnails.medium.url}" alt="${item.snippet.title}" loading="lazy">
+                            <div class="video-info">
+                                <h3>${item.snippet.title}</h3>
+                                <p>${timeAgo(item.snippet.publishedAt)}</p>
+                            </div>
+                        </a>`;
+                    grid.appendChild(card);
+                });
+                grid.style.display = 'grid';
+            }
+        } catch(e) {
+            document.getElementById('pastGrid').innerHTML = `<p style="color:#666;font-size:14px;">Could not load past streams. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank" style="color:#dc2626;">View on YouTube →</a></p>`;
+            document.getElementById('pastGrid').style.display = 'block';
+        }
+        document.getElementById('loadingPast').style.display = 'none';
+    }
+
+    // Boot
+    setupYouTube();
+    setupTwitch();
+    loadPastStreams();
+</script>
+</body>
+</html>
