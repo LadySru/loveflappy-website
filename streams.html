@@ -378,7 +378,6 @@
 </footer>
 
 <script>
-    const API_KEY = 'AIzaSyAf9Fd0eEUxYlXIwKRinde1WGBWnsP78Fk';
     const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
     const TWITCH_CHANNEL = 'loveflappy';
 
@@ -392,10 +391,12 @@
         return Math.floor(s/31536000) + ' years ago';
     }
 
-    async function fetchYT(url) {
-        const res = await fetch(url);
+    async function fetchYT(endpoint, params) {
+        const qs = new URLSearchParams(params);
+        qs.set('endpoint', endpoint);
+        const res = await fetch('/api/youtube?' + qs.toString());
         const data = await res.json();
-        if (data.error) throw new Error(data.error.message);
+        if (data.error) throw new Error(data.error.message || data.error);
         return data;
     }
 
@@ -406,10 +407,9 @@
         const titleEl = document.getElementById('ytTitle');
 
         try {
-            // Check if live
-            const liveData = await fetchYT(
-                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=live&maxResults=1`
-            );
+            const liveData = await fetchYT('search', {
+                channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'live', maxResults: '1'
+            });
 
             if (liveData.items && liveData.items.length > 0) {
                 const vid = liveData.items[0];
@@ -420,10 +420,9 @@
                 badge.className = 'status-badge badge-live';
                 titleEl.textContent = vid.snippet.title;
             } else {
-                // Fall back to most recent completed stream
-                const pastData = await fetchYT(
-                    `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=completed&order=date&maxResults=1`
-                );
+                const pastData = await fetchYT('search', {
+                    channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'completed', order: 'date', maxResults: '1'
+                });
                 if (pastData.items && pastData.items.length > 0) {
                     const vid = pastData.items[0];
                     frame.src = `https://www.youtube.com/embed/${vid.id.videoId}`;
@@ -450,16 +449,15 @@
         const frame = document.getElementById('twitchFrame');
         frame.src = `https://player.twitch.tv/?channel=${TWITCH_CHANNEL}&parent=${parent}&autoplay=false`;
 
-        // Twitch handles live/offline display natively in the embed
         document.getElementById('twitchBadge').textContent = 'Auto-detects Live';
         document.getElementById('twitchBadge').className = 'status-badge badge-offline';
     }
 
     async function loadPastStreams() {
         try {
-            const data = await fetchYT(
-                `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&type=video&eventType=completed&order=date&maxResults=8`
-            );
+            const data = await fetchYT('search', {
+                channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'completed', order: 'date', maxResults: '8'
+            });
             const grid = document.getElementById('pastGrid');
             grid.innerHTML = '';
             const items = data.items || [];
