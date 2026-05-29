@@ -308,6 +308,29 @@
         }
         .community-link:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(220,38,38,0.4); }
 
+        /* Tab header with link */
+        .tab-header {
+            display: flex; justify-content: flex-end; align-items: center;
+            margin-bottom: 18px;
+        }
+        .tab-yt-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 18px; border-radius: 50px;
+            background: rgba(255,0,0,0.12);
+            border: 1px solid rgba(255,0,0,0.35);
+            color: #ff6666; text-decoration: none;
+            font-size: 13px; font-weight: 600;
+            letter-spacing: .5px;
+            transition: all .25s;
+        }
+        .tab-yt-link:hover {
+            background: rgba(255,0,0,0.25);
+            border-color: var(--red);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .tab-yt-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
         /* No content message */
         .no-content {
             text-align: center; padding: 60px 20px; color: #666;
@@ -438,24 +461,48 @@
 
     <!-- Videos Tab -->
     <div class="tab-panel active" id="tab-videos">
+        <div class="tab-header">
+            <a href="https://www.youtube.com/@LoveFlappy/videos" target="_blank" class="tab-yt-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                View All Videos on YouTube
+            </a>
+        </div>
         <div class="loading" id="loadingVideos">Loading latest videos</div>
         <div class="video-grid" id="videoGrid" style="display:none;"></div>
     </div>
 
     <!-- Live Streams Tab -->
     <div class="tab-panel" id="tab-livestreams">
+        <div class="tab-header">
+            <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank" class="tab-yt-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                View All Streams on YouTube
+            </a>
+        </div>
         <div class="loading" id="loadingStreams">Loading streams</div>
         <div class="video-grid" id="streamsGrid" style="display:none;"></div>
     </div>
 
     <!-- Shorts Tab -->
     <div class="tab-panel" id="tab-shorts">
+        <div class="tab-header">
+            <a href="https://www.youtube.com/@LoveFlappy/shorts" target="_blank" class="tab-yt-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                View All Shorts on YouTube
+            </a>
+        </div>
         <div class="loading" id="loadingShorts">Loading shorts</div>
         <div class="shorts-grid" id="shortsGrid" style="display:none;"></div>
     </div>
 
     <!-- Community Tab -->
     <div class="tab-panel" id="tab-community">
+        <div class="tab-header">
+            <a href="https://www.youtube.com/@LoveFlappy/community" target="_blank" class="tab-yt-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                View Community on YouTube
+            </a>
+        </div>
         <div class="community-card">
             <div class="icon">💬</div>
             <h3>Community Posts</h3>
