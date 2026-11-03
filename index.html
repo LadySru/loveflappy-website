@@ -3,146 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoveFlappy | Gaming & Content Creator</title>
+    <title>LoveFlappy ✦ Cosplayer · Gamer · Dreamer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --red: #dc2626;
-            --amber: #f59e0b;
-            --purple: #9146ff;
-            --discord: #5865f2;
-            --dark: #0a0508;
-            --card: rgba(255,255,255,0.04);
-            --border: rgba(220,38,38,0.35);
+            --pink:     #F472B6;
+            --rose:     #FB7185;
+            --lavender: #A78BFA;
+            --violet:   #7C3AED;
+            --cosmic:   #C084FC;
+            --nebula:   #818CF8;
+            --teal:     #34D399;
+            --gold:     #FBBF24;
+            --deep:     #0D0618;
+            --mid:      #150D2E;
+            --surface:  rgba(255,255,255,0.05);
+            --border:   rgba(167,139,250,0.25);
+            --glow-pink: rgba(244,114,182,0.4);
+            --glow-violet: rgba(124,58,237,0.4);
         }
 
         body {
-            font-family: 'Inter', Arial, sans-serif;
-            background: #000;
-            color: #fff;
+            font-family: 'Nunito', sans-serif;
+            background: var(--deep);
+            color: #e2d9f3;
             overflow-x: hidden;
         }
 
-        /* Background */
-        .bg-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden;
+        /* ── Galaxy background ── */
+        .galaxy-bg {
+            position: fixed; inset: 0; z-index: -2; overflow: hidden;
+            background: radial-gradient(ellipse at 20% 20%, #1a0533 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 70%, #0a1a3a 0%, transparent 55%),
+                        radial-gradient(ellipse at 50% 50%, #12022e 0%, #0D0618 100%);
         }
-        .bg-gif {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
-            min-width: 100%; min-height: 100%;
-            object-fit: cover;
+        .nebula-layer {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 30% 60%, rgba(192,132,252,0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 30%, rgba(129,140,248,0.10) 0%, transparent 45%),
+                        radial-gradient(ellipse at 60% 80%, rgba(244,114,182,0.08) 0%, transparent 40%);
         }
-        .bg-container::after {
-            content: ''; position: absolute; inset: 0;
-            background: rgba(0,0,0,0.62); z-index: 1;
+        #star-canvas {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
         }
 
-        /* Snowfall */
-        .snowflakes {
-            position: fixed; inset: 0;
-            pointer-events: none; z-index: 9999; overflow: hidden;
+        /* ── Floating sparkles overlay ── */
+        .sparkle-overlay {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
         }
-        .snowflake {
-            position: absolute; top: -10px; color: #fff;
-            font-size: 1em; opacity: 0.7;
-            animation: fall linear infinite;
+        .sp {
+            position: absolute; font-size: 13px;
+            animation: twinkle var(--d, 2.5s) ease-in-out infinite var(--delay, 0s);
         }
-        @keyframes fall {
-            0%   { top: -10%; opacity: 0.7; }
-            100% { top: 105%; opacity: 0.2; }
+        @keyframes twinkle {
+            0%,100% { opacity: .1; transform: scale(.7); }
+            50%      { opacity: .9; transform: scale(1.3); }
         }
-        .snowflake:nth-child(1)  { left: 2%;  animation-duration: 8s; }
-        .snowflake:nth-child(2)  { left: 15%; animation-duration: 10s; animation-delay: 1s; }
-        .snowflake:nth-child(3)  { left: 30%; animation-duration: 12s; animation-delay: 2s; }
-        .snowflake:nth-child(4)  { left: 45%; animation-duration: 9s; }
-        .snowflake:nth-child(5)  { left: 60%; animation-duration: 11s; animation-delay: 1s; }
-        .snowflake:nth-child(6)  { left: 75%; animation-duration: 10s; animation-delay: 2s; }
-        .snowflake:nth-child(7)  { left: 88%; animation-duration: 13s; }
-        .snowflake:nth-child(8)  { left: 10%; animation-duration: 9s;  animation-delay: 3s; }
-        .snowflake:nth-child(9)  { left: 25%; animation-duration: 11s; }
-        .snowflake:nth-child(10) { left: 40%; animation-duration: 10s; animation-delay: 1.5s; }
 
-        /* Header */
+        /* ── Header ── */
         header {
             position: fixed; top: 0; width: 100%;
             padding: 14px 48px;
-            background: rgba(10,5,8,0.92);
-            backdrop-filter: blur(14px);
+            background: rgba(13,6,24,0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
-            border-bottom: 2px solid var(--red);
+            border-bottom: 1px solid rgba(167,139,250,0.3);
             display: flex; justify-content: space-between; align-items: center;
         }
         .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .logo-img {
             width: 44px; height: 44px; border-radius: 50%;
-            border: 2px solid var(--red);
-            box-shadow: 0 0 14px rgba(220,38,38,0.6);
+            border: 2px solid var(--cosmic);
+            box-shadow: 0 0 16px var(--glow-violet), 0 0 32px rgba(192,132,252,0.2);
             transition: box-shadow .3s;
         }
-        .logo-img:hover { box-shadow: 0 0 28px rgba(220,38,38,1); }
+        .logo-img:hover { box-shadow: 0 0 28px var(--glow-violet), 0 0 56px rgba(192,132,252,0.35); }
         .logo-text {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 26px; font-weight: 700;
-            background: linear-gradient(45deg, var(--red), var(--amber));
+            font-family: 'Playfair Display', serif;
+            font-size: 22px; font-weight: 500; font-style: italic;
+            background: linear-gradient(90deg, var(--cosmic), var(--pink), var(--lavender));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 2px; text-transform: uppercase;
-        }
-        nav { display: flex; gap: 8px; align-items: center; }
-        nav a {
-            color: #ccc; text-decoration: none;
-            padding: 6px 16px; border-radius: 4px;
-            font-size: 14px; font-weight: 500;
-            transition: all .25s;
             letter-spacing: .5px;
         }
-        nav a:hover, nav a.active { color: #fff; background: rgba(220,38,38,0.18); }
+        nav { display: flex; gap: 6px; align-items: center; }
+        nav a {
+            color: #c4b5fd; text-decoration: none;
+            padding: 6px 16px; border-radius: 999px;
+            font-size: 13px; font-weight: 600;
+            transition: all .2s; letter-spacing: .3px;
+        }
+        nav a:hover, nav a.active {
+            color: #fff;
+            background: rgba(167,139,250,0.18);
+        }
+        /* community section */
+        .community-section {
+            max-width: 1280px; margin: 0 auto 60px; padding: 0 24px; position: relative; z-index: 1;
+        }
+        .community-banner {
+            border-radius: 28px; padding: 48px 40px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.16) 0%, rgba(244,114,182,0.10) 100%);
+            border: 1px solid rgba(192,132,252,0.28); text-align: center;
+        }
+        .community-banner .cb-icon { font-size: 48px; margin-bottom: 14px; }
+        .community-banner h2 {
+            font-family: 'Playfair Display', serif; font-size: 30px;
+            background: linear-gradient(135deg, #e0aaff, var(--pink), #93c5fd);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .community-banner p { color: #9d84c2; font-size: 14px; line-height: 1.7; max-width: 520px; margin: 0 auto 28px; }
+        .cb-btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .cb-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 26px; border-radius: 999px; font-family: 'Nunito', sans-serif;
+            font-weight: 700; font-size: 13px; text-decoration: none; transition: all .25s;
+        }
+        .cb-primary { background: linear-gradient(135deg, var(--violet), var(--pink)); color: #fff; box-shadow: 0 6px 24px rgba(124,58,237,0.4); }
+        .cb-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(124,58,237,0.55); }
+        .cb-secondary { background: rgba(255,255,255,0.06); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.3); }
+        .cb-secondary:hover { background: rgba(167,139,250,0.15); transform: translateY(-2px); }
+        .cb-tertiary { background: rgba(255,0,0,0.1); color: #ff8080; border: 1px solid rgba(255,0,0,0.3); }
+        .cb-tertiary:hover { background: rgba(255,0,0,0.2); transform: translateY(-2px); }
         .nav-streams {
-            background: linear-gradient(45deg, var(--red), var(--amber)) !important;
+            background: linear-gradient(135deg, var(--violet), var(--pink)) !important;
             color: #fff !important;
             font-weight: 700 !important;
-            padding: 6px 18px !important;
+            box-shadow: 0 4px 18px rgba(124,58,237,0.45);
         }
-        .nav-streams:hover { opacity: .85; transform: translateY(-1px); }
+        .nav-streams:hover { opacity: .9; transform: translateY(-1px); }
 
-        /* Hero / Profile Card */
+        /* ── Hero ── */
         .hero {
             min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
-            padding: 110px 24px 60px;
+            padding: 120px 24px 80px;
+            position: relative;
         }
-        .profile-card {
-            text-align: center;
-            max-width: 700px; width: 100%;
+
+        .hero-glow {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 600px; height: 600px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(192,132,252,0.12) 0%, transparent 70%);
+            pointer-events: none;
+            animation: pulse-glow 4s ease-in-out infinite;
         }
-        .avatar-wrap {
-            position: relative; display: inline-block; margin-bottom: 24px;
+        @keyframes pulse-glow {
+            0%,100% { transform: translate(-50%,-50%) scale(1); opacity: .7; }
+            50%      { transform: translate(-50%,-50%) scale(1.1); opacity: 1; }
         }
+
+        .profile-card { text-align: center; max-width: 680px; width: 100%; position: relative; z-index: 1; }
+
+        /* Avatar */
+        .avatar-wrap { position: relative; display: inline-block; margin-bottom: 28px; }
         .avatar-ring {
-            width: 148px; height: 148px; border-radius: 50%;
-            background: conic-gradient(var(--red), var(--amber), var(--red));
+            width: 160px; height: 160px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--violet), var(--pink), var(--cosmic), var(--nebula));
             padding: 4px;
-            animation: spin-ring 4s linear infinite;
+            animation: ring-spin 6s linear infinite;
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 40px var(--glow-violet), 0 0 80px rgba(192,132,252,0.2);
         }
-        @keyframes spin-ring {
-            from { filter: drop-shadow(0 0 8px rgba(220,38,38,0.7)); }
-            50%  { filter: drop-shadow(0 0 22px rgba(245,158,11,0.9)); }
-            to   { filter: drop-shadow(0 0 8px rgba(220,38,38,0.7)); }
+        @keyframes ring-spin {
+            0%   { box-shadow: 0 0 30px var(--glow-violet), 0 0 60px rgba(244,114,182,0.15); }
+            50%  { box-shadow: 0 0 50px var(--glow-pink),   0 0 90px rgba(167,139,250,0.25); }
+            100% { box-shadow: 0 0 30px var(--glow-violet), 0 0 60px rgba(244,114,182,0.15); }
         }
-        .avatar-img {
-            width: 138px; height: 138px; border-radius: 50%;
-            object-fit: cover; border: 3px solid #000;
+        .avatar-inner {
+            width: 150px; height: 150px; border-radius: 50%;
+            background: var(--deep); overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid rgba(167,139,250,0.3);
         }
+        .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        .orbit {
+            position: absolute; inset: -12px;
+            border-radius: 50%;
+            border: 1.5px dashed rgba(192,132,252,0.4);
+            animation: orbit-spin 10s linear infinite;
+        }
+        .orbit::before {
+            content: '✦'; position: absolute; top: -6px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px; color: var(--cosmic);
+        }
+        @keyframes orbit-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
         .live-dot {
-            position: absolute; bottom: 8px; right: 8px;
-            width: 18px; height: 18px; border-radius: 50%;
-            background: #22c55e;
-            border: 2px solid #000;
+            position: absolute; bottom: 10px; right: 10px;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: #22c55e; border: 3px solid var(--deep);
             display: none;
         }
         .live-dot.active { display: block; animation: pulse-dot 1.4s ease-in-out infinite; }
@@ -152,74 +209,108 @@
         }
 
         .profile-name {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 64px; font-weight: 700;
-            background: linear-gradient(45deg, var(--red), var(--amber), #fff);
+            font-family: 'Playfair Display', serif;
+            font-size: 62px; font-weight: 500;
+            background: linear-gradient(135deg, #e0aaff, var(--pink), #93c5fd, var(--cosmic));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            line-height: 1; margin-bottom: 12px;
+            line-height: 1.1; margin-bottom: 8px;
+            filter: drop-shadow(0 0 20px rgba(192,132,252,0.4));
         }
-        .profile-badge {
-            display: inline-block;
-            background: linear-gradient(45deg, var(--red), var(--amber));
-            color: #fff; font-size: 11px; font-weight: 700;
-            padding: 3px 12px; border-radius: 20px;
-            letter-spacing: 2px; text-transform: uppercase;
-            margin-bottom: 20px;
+
+        .profile-handle {
+            font-size: 13px; color: #a78bfa; letter-spacing: .18em;
+            margin-bottom: 16px; font-weight: 600;
         }
+
+        .pill-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 22px; }
+        .pill {
+            font-size: 12px; padding: 5px 16px; border-radius: 999px;
+            font-weight: 700; letter-spacing: .05em;
+            border: 1.5px solid transparent;
+        }
+        .pill-a { background: rgba(124,58,237,0.18); color: #d8b4fe; border-color: rgba(167,139,250,0.4); }
+        .pill-b { background: rgba(244,114,182,0.15); color: #fda4af; border-color: rgba(251,113,133,0.35); }
+        .pill-c { background: rgba(52,211,153,0.12);  color: #6ee7b7; border-color: rgba(52,211,153,0.3); }
+        .pill-d { background: rgba(251,191,36,0.12);  color: #fcd34d; border-color: rgba(251,191,36,0.3); }
+
         .profile-bio {
-            font-size: 15px; line-height: 1.75; color: #bbb;
-            max-width: 520px; margin: 0 auto 32px;
+            font-size: 15px; line-height: 1.8; color: #c4b5fd;
+            max-width: 500px; margin: 0 auto 32px;
         }
         .profile-bio strong { color: #fff; }
 
-        /* Social Buttons */
-        .social-buttons {
-            display: flex; gap: 10px; justify-content: center;
-            flex-wrap: wrap; margin-bottom: 12px;
-        }
+        /* Social buttons */
+        .social-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .social-btn {
             display: inline-flex; align-items: center; gap: 8px;
-            padding: 9px 20px; border-radius: 50px;
-            text-decoration: none; font-weight: 600; font-size: 13px;
-            letter-spacing: .5px; transition: all .25s;
-            border: none; cursor: pointer;
+            padding: 10px 22px; border-radius: 999px;
+            text-decoration: none; font-weight: 700; font-size: 13px;
+            letter-spacing: .3px; transition: all .25s;
+            border: 1.5px solid transparent; cursor: pointer;
         }
         .social-btn:hover { transform: translateY(-3px); filter: brightness(1.15); }
-        .social-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
-        .btn-yt    { background: #FF0000; color: #fff; }
-        .btn-twitch { background: var(--purple); color: #fff; }
-        .btn-tiktok { background: #010101; color: #fff; border: 1px solid #333; }
-        .btn-discord { background: var(--discord); color: #fff; }
-        .btn-x     { background: #1a1a1a; color: #fff; border: 1px solid #444; }
+        .social-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+        .btn-yt     { background: rgba(255,0,0,0.15);   color: #ff8080; border-color: rgba(255,0,0,0.35); }
+        .btn-twitch { background: rgba(145,70,255,0.18); color: #c4a0ff; border-color: rgba(145,70,255,0.4); }
+        .btn-tiktok { background: rgba(255,255,255,0.06); color: #e2e8f0; border-color: rgba(255,255,255,0.15); }
+        .btn-discord { background: rgba(88,101,242,0.18); color: #a5b4fc; border-color: rgba(88,101,242,0.4); }
+        .btn-x      { background: rgba(255,255,255,0.06); color: #cbd5e1; border-color: rgba(255,255,255,0.12); }
+        .btn-yt:hover     { background: rgba(255,0,0,0.28);   border-color: rgba(255,0,0,0.7); }
+        .btn-twitch:hover { background: rgba(145,70,255,0.3);  border-color: rgba(145,70,255,0.7); }
+        .btn-discord:hover{ background: rgba(88,101,242,0.3);  border-color: rgba(88,101,242,0.7); }
 
-        /* Tabs */
+        /* ── Content Hub ── */
         .content-hub {
-            padding: 0 24px 80px;
-            max-width: 1300px; margin: 0 auto;
+            padding: 0 24px 100px;
+            max-width: 1280px; margin: 0 auto; position: relative; z-index: 1;
         }
+
+        /* Tab bar */
         .tab-bar {
-            display: flex; gap: 4px; justify-content: center;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-            margin-bottom: 32px; flex-wrap: wrap;
+            display: flex; gap: 0; justify-content: center;
+            margin-bottom: 36px; flex-wrap: wrap;
+            border-bottom: 1px solid rgba(167,139,250,0.2);
         }
         .tab-btn {
             padding: 12px 28px;
-            background: none; border: none; color: #888;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 17px; font-weight: 600;
-            cursor: pointer; letter-spacing: 1px;
-            text-transform: uppercase;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
+            background: none; border: none; color: #7c6fa0;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px; font-weight: 700;
+            cursor: pointer; letter-spacing: .8px;
+            border-bottom: 2.5px solid transparent;
+            margin-bottom: -1px;
             transition: all .2s;
         }
-        .tab-btn:hover { color: #ddd; }
-        .tab-btn.active { color: #fff; border-bottom-color: var(--red); }
+        .tab-btn:hover { color: #d8b4fe; }
+        .tab-btn.active { color: #e0aaff; border-bottom-color: var(--cosmic); }
 
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* Video Grid */
+        /* Section headers */
+        .sec-header {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 16px; color: #c084fc; font-style: italic;
+            margin-bottom: 18px;
+        }
+        .sec-header::after { content: ''; flex: 1; height: 1px; background: rgba(167,139,250,0.2); }
+
+        /* Tab header link */
+        .tab-header { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+        .tab-yt-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 18px; border-radius: 999px;
+            background: rgba(255,0,0,0.1);
+            border: 1px solid rgba(255,0,0,0.3);
+            color: #ff8080; text-decoration: none;
+            font-size: 12px; font-weight: 700; letter-spacing: .3px;
+            transition: all .2s;
+        }
+        .tab-yt-link:hover { background: rgba(255,0,0,0.22); border-color: rgba(255,0,0,0.6); color: #fff; transform: translateY(-2px); }
+        .tab-yt-link svg { width: 15px; height: 15px; }
+
+        /* Video grid */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -227,168 +318,146 @@
         }
         .shorts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
             gap: 18px;
         }
         .video-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 10px; overflow: hidden;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(167,139,250,0.2);
+            border-radius: 14px; overflow: hidden;
             transition: all .3s; cursor: pointer;
         }
         .video-card:hover {
             transform: translateY(-6px);
-            border-color: var(--red);
-            box-shadow: 0 12px 32px rgba(220,38,38,0.35);
+            border-color: rgba(192,132,252,0.6);
+            box-shadow: 0 12px 40px rgba(124,58,237,0.3), 0 0 0 1px rgba(192,132,252,0.15);
         }
         .video-card a { text-decoration: none; color: inherit; display: block; }
         .thumb-wrap { position: relative; }
         .video-thumb {
             width: 100%; aspect-ratio: 16/9;
-            background: linear-gradient(135deg, #1a0a1f, #0f0a1a);
+            background: linear-gradient(135deg, #1a0533, #0a1a3a);
             object-fit: cover; display: block;
         }
         .short-thumb {
             width: 100%; aspect-ratio: 9/16;
-            background: linear-gradient(135deg, #1a0a1f, #0f0a1a);
+            background: linear-gradient(135deg, #1a0533, #0a1a3a);
             object-fit: cover; display: block;
         }
         .live-badge {
             position: absolute; top: 8px; left: 8px;
-            background: var(--red); color: #fff;
-            font-size: 11px; font-weight: 700;
-            padding: 2px 8px; border-radius: 4px;
-            letter-spacing: 1px;
+            background: linear-gradient(135deg, #e11d48, #f43f5e);
+            color: #fff; font-size: 10px; font-weight: 700;
+            padding: 3px 10px; border-radius: 999px; letter-spacing: .8px;
         }
         .video-info { padding: 12px 14px; }
         .video-info h3 {
-            font-size: 14px; color: #fff;
-            line-height: 1.4; margin-bottom: 6px;
+            font-size: 13px; color: #e2d9f3; line-height: 1.45; margin-bottom: 5px;
             display: -webkit-box; -webkit-line-clamp: 2;
             -webkit-box-orient: vertical; overflow: hidden;
         }
-        .video-info p { color: #888; font-size: 12px; }
+        .video-info p { color: #7c6fa0; font-size: 11px; }
 
-        /* Loading state */
+        /* Loading */
         .loading {
-            text-align: center; padding: 60px 20px; color: #666;
-            font-size: 15px;
+            text-align: center; padding: 60px 20px; color: #7c6fa0; font-size: 14px;
         }
         .loading::after {
             content: ''; display: block; width: 36px; height: 36px;
-            border: 3px solid #333; border-top-color: var(--red);
+            border: 3px solid rgba(167,139,250,0.2); border-top-color: var(--cosmic);
             border-radius: 50%; margin: 16px auto 0;
             animation: spin .8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Community placeholder */
+        /* Community */
         .community-card {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 56px 32px; text-align: center;
-            max-width: 560px; margin: 0 auto;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(167,139,250,0.25);
+            border-radius: 20px; padding: 60px 32px;
+            text-align: center; max-width: 520px; margin: 0 auto;
         }
-        .community-card .icon { font-size: 56px; margin-bottom: 18px; }
+        .community-card .icon { font-size: 52px; margin-bottom: 18px; }
         .community-card h3 {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 28px; margin-bottom: 12px;
-            background: linear-gradient(45deg, var(--red), var(--amber));
+            font-family: 'Playfair Display', serif;
+            font-size: 26px; margin-bottom: 12px;
+            background: linear-gradient(90deg, var(--cosmic), var(--pink));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .community-card p { color: #aaa; margin-bottom: 24px; line-height: 1.6; }
+        .community-card p { color: #9d84c2; margin-bottom: 24px; line-height: 1.65; font-size: 14px; }
         .community-link {
-            display: inline-block;
-            padding: 12px 32px; border-radius: 50px;
-            background: linear-gradient(45deg, var(--red), var(--amber));
+            display: inline-block; padding: 12px 32px; border-radius: 999px;
+            background: linear-gradient(135deg, var(--violet), var(--pink));
             color: #fff; font-weight: 700; text-decoration: none;
-            font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
+            font-size: 13px; letter-spacing: .5px;
+            box-shadow: 0 8px 28px rgba(124,58,237,0.4);
             transition: all .25s;
         }
-        .community-link:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(220,38,38,0.4); }
+        .community-link:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(124,58,237,0.55); }
 
-        /* Tab header with link */
-        .tab-header {
-            display: flex; justify-content: flex-end; align-items: center;
+        /* No content */
+        .no-content { text-align: center; padding: 60px 20px; color: #7c6fa0; font-size: 14px; }
+        .no-content a { color: var(--cosmic); text-decoration: none; }
+        .no-content a:hover { color: var(--pink); }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center; padding: 48px 24px 32px;
+            background: rgba(13,6,24,0.9);
+            border-top: 1px solid rgba(167,139,250,0.2);
+            color: #5a4d72; position: relative; z-index: 1;
+        }
+        .footer-heart {
+            font-family: 'Playfair Display', serif;
+            font-size: 15px; color: #a78bfa; font-style: italic;
             margin-bottom: 18px;
         }
-        .tab-yt-link {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 7px 18px; border-radius: 50px;
-            background: rgba(255,0,0,0.12);
-            border: 1px solid rgba(255,0,0,0.35);
-            color: #ff6666; text-decoration: none;
-            font-size: 13px; font-weight: 600;
-            letter-spacing: .5px;
-            transition: all .25s;
-        }
-        .tab-yt-link:hover {
-            background: rgba(255,0,0,0.25);
-            border-color: var(--red);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-        .tab-yt-link svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-        /* No content message */
-        .no-content {
-            text-align: center; padding: 60px 20px; color: #666;
-            font-size: 15px;
-        }
-        .no-content a { color: var(--red); }
-
-        /* Footer */
-        footer {
-            text-align: center; padding: 40px 24px;
-            background: rgba(10,5,8,0.92);
-            border-top: 2px solid var(--red);
-            color: #555;
-        }
         .footer-socials {
-            display: flex; justify-content: center; gap: 14px;
-            margin: 20px 0 16px; flex-wrap: wrap;
+            display: flex; justify-content: center; gap: 12px;
+            margin-bottom: 18px; flex-wrap: wrap;
         }
         .footer-social {
-            width: 44px; height: 44px; border-radius: 10px;
+            width: 44px; height: 44px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff; text-decoration: none; font-size: 20px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(167,139,250,0.18);
+            color: #c4b5fd; text-decoration: none; font-size: 20px;
             transition: all .25s;
         }
-        .footer-social:hover { transform: translateY(-4px); border-color: var(--red); background: rgba(220,38,38,0.15); }
-        footer p { font-size: 13px; }
+        .footer-social:hover {
+            transform: translateY(-4px);
+            border-color: var(--cosmic);
+            background: rgba(192,132,252,0.12);
+            box-shadow: 0 8px 24px rgba(124,58,237,0.3);
+        }
+        footer p { font-size: 12px; color: #4a3d62; }
 
-        /* Responsive */
+        /* ── Responsive ── */
         @media (max-width: 768px) {
             header { padding: 12px 16px; }
             .profile-name { font-size: 44px; }
             .content-hub { padding: 0 16px 60px; }
-            .tab-btn { padding: 10px 16px; font-size: 14px; }
-            nav a { padding: 5px 10px; font-size: 13px; }
+            .tab-btn { padding: 10px 16px; font-size: 13px; }
+            nav a { padding: 5px 10px; font-size: 12px; }
         }
         @media (max-width: 480px) {
             .profile-name { font-size: 36px; }
-            .social-buttons { gap: 8px; }
             .social-btn { padding: 8px 14px; font-size: 12px; }
+            .avatar-ring { width: 130px; height: 130px; }
+            .avatar-inner { width: 122px; height: 122px; }
         }
     </style>
 </head>
 <body>
 
-<div class="snowflakes">
-    <div class="snowflake">❅</div><div class="snowflake">❆</div>
-    <div class="snowflake">❅</div><div class="snowflake">❆</div>
-    <div class="snowflake">❅</div><div class="snowflake">❆</div>
-    <div class="snowflake">❅</div><div class="snowflake">❆</div>
-    <div class="snowflake">❅</div><div class="snowflake">❆</div>
-</div>
+<!-- Galaxy background -->
+<div class="galaxy-bg"><div class="nebula-layer"></div></div>
+<canvas id="star-canvas"></canvas>
 
-<div class="bg-container">
-    <img class="bg-gif" src="https://i.imgur.com/vF6AZki.gif" alt="">
-</div>
+<!-- Floating sparkles -->
+<div class="sparkle-overlay" id="sparkleOverlay"></div>
 
+<!-- Header -->
 <header>
     <a href="index.html" class="logo-link">
         <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="logo-img">
@@ -396,52 +465,62 @@
     </a>
     <nav>
         <a href="index.html" class="active">Home</a>
+        <a href="cosplay.html">✦ Cosplays</a>
+        <a href="media.html">🎮 Media</a>
+        <a href="community.html">🔮 Community</a>
         <a href="streams.html" class="nav-streams">🔴 Streams</a>
     </nav>
 </header>
 
-<!-- Hero / Profile -->
+<!-- Hero -->
 <div class="hero" id="home">
+    <div class="hero-glow"></div>
     <div class="profile-card">
+
         <div class="avatar-wrap">
+            <div class="orbit"></div>
             <div class="avatar-ring">
-                <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="avatar-img">
+                <div class="avatar-inner">
+                    <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="avatar-img">
+                </div>
             </div>
             <div class="live-dot" id="liveDot"></div>
         </div>
 
         <h1 class="profile-name">LoveFlappy</h1>
-        <div class="profile-badge">Content Creator &amp; Gamer</div>
+        <div class="profile-handle">✦ cosplayer · gamer · dreamer ✦</div>
+
+        <div class="pill-row">
+            <span class="pill pill-a">🔮 cosplay queen</span>
+            <span class="pill pill-b">🎮 gamer girl</span>
+            <span class="pill pill-c">🌸 anime lover</span>
+            <span class="pill pill-d">✨ content creator</span>
+        </div>
 
         <p class="profile-bio">
-            🕹️ Content creator, gamer &amp; anime lover.<br>
+            Content creator, gamer &amp; anime lover ✦<br>
             <strong>ADHD-fueled chaos</strong> — topics change spastically!<br>
-            Former Vine AMV editor (Flapjack1237) · I make content when I can.<br>
+            Former Vine AMV editor (Flapjack1237) · making content when I can ✨<br>
             📧 <strong>Business:</strong> Flapjack1238@gmail.com
         </p>
 
         <div class="social-buttons">
-            <!-- YouTube -->
             <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="social-btn btn-yt">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
                 YouTube
             </a>
-            <!-- Twitch -->
             <a href="https://www.twitch.tv/loveflappy" target="_blank" class="social-btn btn-twitch">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.6 6H10v4.5h1.6V6zm4.3 0h-1.6v4.5h1.6V6zM2.4 0L0 2.4V21.6h6V24l2.4-2.4H12l4.8-4.8V0H2.4zm16.8 13.2L16 16.4h-3.6L10 18.8v-2.4H4.8V2.4h14.4v10.8z"/></svg>
                 Twitch
             </a>
-            <!-- TikTok -->
             <a href="https://www.tiktok.com/@oflappy" target="_blank" class="social-btn btn-tiktok">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 3a5 5 0 0 1-5-5h-3.4v15.3a2.9 2.9 0 1 1-2-2.8V7.1a6.3 6.3 0 1 0 5.4 6.2V8.6A8.4 8.4 0 0 0 19.6 10V6.6A5 5 0 0 1 16.8 6v-3h2.8z"/></svg>
                 TikTok
             </a>
-            <!-- Discord -->
             <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="social-btn btn-discord">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 3a18.8 18.8 0 0 0-4.6-1.4 13 13 0 0 0-.6 1.2 17.4 17.4 0 0 0-5.2 0A13 13 0 0 0 9.3 1.6 18.8 18.8 0 0 0 4.7 3 19.4 19.4 0 0 0 1.6 18.3a19 19 0 0 0 5.7 2.9 14.2 14.2 0 0 0 1.2-2 12.4 12.4 0 0 1-1.9-.9l.5-.4a13.5 13.5 0 0 0 11.6 0l.5.4a12.4 12.4 0 0 1-1.9.9 14.2 14.2 0 0 0 1.2 2 19 19 0 0 0 5.7-2.9A19.4 19.4 0 0 0 20.3 3zM8.7 15.2c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3 2 1 2 2.3-.9 2.3-2 2.3zm6.6 0c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3 2 1 2 2.3-.9 2.3-2 2.3z"/></svg>
                 Discord
             </a>
-            <!-- X -->
             <a href="https://x.com/EsotericFlap" target="_blank" class="social-btn btn-x">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.3 2h-3L12 6.3 8.9 2H3l6.5 9.3L3 22h3l3.7-5.3L13.4 22H19l-6.8-9.8L18.3 2z"/></svg>
                 X
@@ -450,69 +529,85 @@
     </div>
 </div>
 
+<!-- Community CTA -->
+<div class="community-section">
+    <div class="community-banner">
+        <div class="cb-icon">🌌</div>
+        <h2>Join the Cosmic Community ✦</h2>
+        <p>Hang out on Discord, share your cosplays and gaming screenshots, catch live streams, and be part of the galaxy! Every follow, comment and share means the world ♡</p>
+        <div class="cb-btn-row">
+            <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="cb-btn cb-primary">💬 Join Discord</a>
+            <a href="cosplay.html" class="cb-btn cb-secondary">✦ Cosplay Gallery</a>
+            <a href="https://www.youtube.com/@LoveFlappy?sub_confirmation=1" target="_blank" class="cb-btn cb-tertiary">📺 Subscribe on YouTube</a>
+        </div>
+    </div>
+</div>
+
 <!-- Content Hub -->
 <div class="content-hub" id="content">
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('videos')">Videos</button>
-        <button class="tab-btn" onclick="switchTab('livestreams')">Live Streams</button>
-        <button class="tab-btn" onclick="switchTab('shorts')">Shorts</button>
-        <button class="tab-btn" onclick="switchTab('community')">Community</button>
+        <button class="tab-btn active" onclick="switchTab('videos')">✦ Videos</button>
+        <button class="tab-btn" onclick="switchTab('livestreams')">🔴 Live Streams</button>
+        <button class="tab-btn" onclick="switchTab('shorts')">⚡ Shorts</button>
+        <button class="tab-btn" onclick="switchTab('community')">💬 Community</button>
     </div>
 
-    <!-- Videos Tab -->
+    <!-- Videos -->
     <div class="tab-panel active" id="tab-videos">
         <div class="tab-header">
             <a href="https://www.youtube.com/@LoveFlappy/videos" target="_blank" class="tab-yt-link">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
-                View All Videos on YouTube
+                View All on YouTube
             </a>
         </div>
         <div class="loading" id="loadingVideos">Loading latest videos</div>
         <div class="video-grid" id="videoGrid" style="display:none;"></div>
     </div>
 
-    <!-- Live Streams Tab -->
+    <!-- Live Streams -->
     <div class="tab-panel" id="tab-livestreams">
         <div class="tab-header">
             <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank" class="tab-yt-link">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
-                View All Streams on YouTube
+                View All Streams
             </a>
         </div>
         <div class="loading" id="loadingStreams">Loading streams</div>
         <div class="video-grid" id="streamsGrid" style="display:none;"></div>
     </div>
 
-    <!-- Shorts Tab -->
+    <!-- Shorts -->
     <div class="tab-panel" id="tab-shorts">
         <div class="tab-header">
             <a href="https://www.youtube.com/@LoveFlappy/shorts" target="_blank" class="tab-yt-link">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
-                View All Shorts on YouTube
+                View All Shorts
             </a>
         </div>
         <div class="loading" id="loadingShorts">Loading shorts</div>
         <div class="shorts-grid" id="shortsGrid" style="display:none;"></div>
     </div>
 
-    <!-- Community Tab -->
+    <!-- Community -->
     <div class="tab-panel" id="tab-community">
         <div class="tab-header">
             <a href="https://www.youtube.com/@LoveFlappy/community" target="_blank" class="tab-yt-link">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
-                View Community on YouTube
+                View Community
             </a>
         </div>
         <div class="community-card">
-            <div class="icon">💬</div>
+            <div class="icon">🔮</div>
             <h3>Community Posts</h3>
-            <p>Community posts aren't available through the YouTube API — head directly to the YouTube Community tab to see all posts, polls, and updates.</p>
-            <a href="https://www.youtube.com/@LoveFlappy/community" target="_blank" class="community-link">View Community Posts</a>
+            <p>Community posts aren't available through the YouTube API — head directly to the Community tab to see all posts, polls &amp; updates ✨</p>
+            <a href="https://www.youtube.com/@LoveFlappy/community" target="_blank" class="community-link">✦ View Community Posts</a>
         </div>
     </div>
 </div>
 
+<!-- Footer -->
 <footer>
+    <div class="footer-heart">✦ made with lots of love ✦</div>
     <div class="footer-socials">
         <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="footer-social">📺</a>
         <a href="https://www.twitch.tv/loveflappy" target="_blank" class="footer-social">🎮</a>
@@ -520,169 +615,232 @@
         <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="footer-social">💬</a>
         <a href="https://x.com/EsotericFlap" target="_blank" class="footer-social">🐦</a>
     </div>
-    <p>&copy; 2025 LoveFlappy. All rights reserved.</p>
+    <p>&copy; 2025 LoveFlappy · All rights reserved</p>
 </footer>
 
 <script>
-    const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
-    const loaded = { videos: false, livestreams: false, shorts: false };
+// ── Star canvas ──
+(function() {
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+    const STAR_COUNT = 200;
 
-    function switchTab(name) {
-        document.querySelectorAll('.tab-btn').forEach((b,i) => {
-            const tabs = ['videos','livestreams','shorts','community'];
-            b.classList.toggle('active', tabs[i] === name);
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+
+    function mkStar() {
+        const colors = ['#ffffff','#e0aaff','#c084fc','#818cf8','#f472b6','#fbbf24','#93c5fd'];
+        return {
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: Math.random() * 1.4 + 0.2,
+            c: colors[Math.floor(Math.random() * colors.length)],
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.6 + 0.3
+        };
+    }
+
+    function init() {
+        resize();
+        stars = Array.from({length: STAR_COUNT}, mkStar);
+    }
+
+    let t = 0;
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        t += 0.012;
+        stars.forEach(s => {
+            const alpha = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = s.c;
+            ctx.globalAlpha = alpha;
+            ctx.fill();
         });
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('tab-' + name).classList.add('active');
-
-        if (!loaded[name]) {
-            if (name === 'videos')      loadVideos();
-            if (name === 'livestreams') loadStreams();
-            if (name === 'shorts')      loadShorts();
-        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(draw);
     }
 
-    function timeAgo(date) {
-        const s = Math.floor((Date.now() - new Date(date)) / 1000);
-        if (s < 60)     return s + 's ago';
-        if (s < 3600)   return Math.floor(s/60) + 'm ago';
-        if (s < 86400)  return Math.floor(s/3600) + 'h ago';
-        if (s < 2592000) return Math.floor(s/86400) + 'd ago';
-        if (s < 31536000) return Math.floor(s/2592000) + ' months ago';
-        return Math.floor(s/31536000) + ' years ago';
-    }
+    window.addEventListener('resize', resize);
+    init();
+    draw();
+})();
 
-    function makeCard(videoId, title, thumb, meta, isLive, isShort) {
-        const card = document.createElement('div');
-        card.className = 'video-card';
-        card.innerHTML = `
-            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
-                <div class="thumb-wrap">
-                    <img class="${isShort ? 'short-thumb' : 'video-thumb'}" src="${thumb}" alt="${title}" loading="lazy">
-                    ${isLive ? '<span class="live-badge">🔴 LIVE</span>' : ''}
-                </div>
-                <div class="video-info">
-                    <h3>${title}</h3>
-                    <p>${meta}</p>
-                </div>
-            </a>`;
-        return card;
+// ── Floating sparkles ──
+(function() {
+    const glyphs = ['✦','✧','⋆','˚','·','✿','♡','★','❀','◦'];
+    const colors = ['#c084fc','#f472b6','#818cf8','#fbbf24','#93c5fd','#a78bfa','#fb7185'];
+    const container = document.getElementById('sparkleOverlay');
+    for (let i = 0; i < 28; i++) {
+        const el = document.createElement('span');
+        el.className = 'sp';
+        el.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+        const dur = (Math.random() * 2 + 2).toFixed(2);
+        const delay = (Math.random() * 3).toFixed(2);
+        el.style.cssText = `
+            left:${Math.random()*98}%;top:${Math.random()*100}%;
+            color:${colors[Math.floor(Math.random()*colors.length)]};
+            font-size:${(Math.random()*7+9).toFixed(1)}px;
+            --d:${dur}s;--delay:-${delay}s;
+        `;
+        container.appendChild(el);
     }
+})();
 
-    async function fetchYT(endpoint, params) {
-        const qs = new URLSearchParams(params);
-        qs.set('endpoint', endpoint);
-        const res = await fetch('/api/youtube?' + qs.toString());
-        const data = await res.json();
-        if (data.error) throw new Error(data.error.message || data.error);
-        return data;
+// ── Tab switching ──
+const TABS = ['videos','livestreams','shorts','community'];
+function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => {
+        b.classList.toggle('active', TABS[i] === name);
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    if (!loaded[name]) {
+        if (name === 'videos')      loadVideos();
+        if (name === 'livestreams') loadStreams();
+        if (name === 'shorts')      loadShorts();
     }
+}
 
-    async function loadVideos() {
-        loaded.videos = true;
-        try {
-            const data = await fetchYT('search', {
-                channelId: CHANNEL_ID, part: 'snippet,id', order: 'date', maxResults: '12', type: 'video'
-            });
-            const grid = document.getElementById('videoGrid');
-            grid.innerHTML = '';
-            (data.items || []).forEach(item => {
-                grid.appendChild(makeCard(
-                    item.id.videoId,
-                    item.snippet.title,
-                    item.snippet.thumbnails.medium.url,
-                    timeAgo(item.snippet.publishedAt),
-                    false, false
-                ));
-            });
-            document.getElementById('loadingVideos').style.display = 'none';
-            grid.style.display = 'grid';
-        } catch(e) {
-            document.getElementById('loadingVideos').innerHTML = '<p class="no-content">Could not load videos. <a href="https://www.youtube.com/@LoveFlappy/videos" target="_blank">View on YouTube →</a></p>';
-            document.getElementById('loadingVideos').classList.remove('loading');
-        }
-    }
+// ── YouTube API ──
+const CHANNEL_ID = 'UCxIegFXXGTW-2qSrk7x-Xag';
+const loaded = { videos: false, livestreams: false, shorts: false };
 
-    async function loadStreams() {
-        loaded.livestreams = true;
-        const grid = document.getElementById('streamsGrid');
+function timeAgo(date) {
+    const s = Math.floor((Date.now() - new Date(date)) / 1000);
+    if (s < 60)      return s + 's ago';
+    if (s < 3600)    return Math.floor(s/60) + 'm ago';
+    if (s < 86400)   return Math.floor(s/3600) + 'h ago';
+    if (s < 2592000) return Math.floor(s/86400) + 'd ago';
+    if (s < 31536000)return Math.floor(s/2592000) + ' months ago';
+    return Math.floor(s/31536000) + ' years ago';
+}
+
+function makeCard(videoId, title, thumb, meta, isLive, isShort) {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.innerHTML = `
+        <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
+            <div class="thumb-wrap">
+                <img class="${isShort ? 'short-thumb' : 'video-thumb'}" src="${thumb}" alt="${title}" loading="lazy">
+                ${isLive ? '<span class="live-badge">🔴 LIVE</span>' : ''}
+            </div>
+            <div class="video-info">
+                <h3>${title}</h3>
+                <p>${meta}</p>
+            </div>
+        </a>`;
+    return card;
+}
+
+async function fetchYT(endpoint, params) {
+    const qs = new URLSearchParams(params);
+    qs.set('endpoint', endpoint);
+    const res = await fetch('/api/youtube?' + qs.toString());
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || data.error);
+    return data;
+}
+
+async function loadVideos() {
+    loaded.videos = true;
+    try {
+        const data = await fetchYT('search', {
+            channelId: CHANNEL_ID, part: 'snippet,id', order: 'date', maxResults: '12', type: 'video'
+        });
+        const grid = document.getElementById('videoGrid');
         grid.innerHTML = '';
-        try {
-            const live = await fetchYT('search', {
-                channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'live', maxResults: '6'
-            });
-            let items = live.items || [];
-            const isLive = items.length > 0;
-
-            if (!isLive) {
-                const past = await fetchYT('search', {
-                    channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'completed', order: 'date', maxResults: '8'
-                });
-                items = past.items || [];
-            }
-
-            if (items.length === 0) {
-                grid.innerHTML = '<div class="no-content">No streams found. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank">View on YouTube →</a></div>';
-                grid.style.display = 'block';
-            } else {
-                items.forEach(item => {
-                    grid.appendChild(makeCard(
-                        item.id.videoId,
-                        item.snippet.title,
-                        item.snippet.thumbnails.medium.url,
-                        isLive ? '🔴 Live now' : timeAgo(item.snippet.publishedAt),
-                        isLive, false
-                    ));
-                });
-                grid.style.display = 'grid';
-            }
-        } catch(e) {
-            grid.innerHTML = '<div class="no-content">Could not load streams. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank">View on YouTube →</a></div>';
-            grid.style.display = 'block';
-        }
-        document.getElementById('loadingStreams').style.display = 'none';
+        (data.items || []).forEach(item => {
+            grid.appendChild(makeCard(
+                item.id.videoId, item.snippet.title,
+                item.snippet.thumbnails.medium.url,
+                timeAgo(item.snippet.publishedAt), false, false
+            ));
+        });
+        document.getElementById('loadingVideos').style.display = 'none';
+        grid.style.display = 'grid';
+    } catch(e) {
+        const el = document.getElementById('loadingVideos');
+        el.innerHTML = '<p class="no-content">Could not load videos. <a href="https://www.youtube.com/@LoveFlappy/videos" target="_blank">View on YouTube →</a></p>';
+        el.classList.remove('loading');
     }
+}
 
-    async function loadShorts() {
-        loaded.shorts = true;
-        try {
-            const data = await fetchYT('search', {
-                channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', videoDuration: 'short', order: 'date', maxResults: '18'
+async function loadStreams() {
+    loaded.livestreams = true;
+    const grid = document.getElementById('streamsGrid');
+    grid.innerHTML = '';
+    try {
+        const live = await fetchYT('search', {
+            channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'live', maxResults: '6'
+        });
+        let items = live.items || [];
+        const isLive = items.length > 0;
+        if (!isLive) {
+            const past = await fetchYT('search', {
+                channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', eventType: 'completed', order: 'date', maxResults: '8'
             });
-            const grid = document.getElementById('shortsGrid');
-            grid.innerHTML = '';
-            (data.items || []).forEach(item => {
+            items = past.items || [];
+        }
+        if (items.length === 0) {
+            grid.innerHTML = '<div class="no-content">No streams found. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank">View on YouTube →</a></div>';
+            grid.style.display = 'block';
+        } else {
+            items.forEach(item => {
                 grid.appendChild(makeCard(
-                    item.id.videoId,
-                    item.snippet.title,
+                    item.id.videoId, item.snippet.title,
                     item.snippet.thumbnails.medium.url,
-                    timeAgo(item.snippet.publishedAt),
-                    false, true
+                    isLive ? '🔴 Live now' : timeAgo(item.snippet.publishedAt),
+                    isLive, false
                 ));
             });
-            document.getElementById('loadingShorts').style.display = 'none';
             grid.style.display = 'grid';
-        } catch(e) {
-            document.getElementById('loadingShorts').innerHTML = '<p class="no-content">Could not load shorts. <a href="https://www.youtube.com/@LoveFlappy/shorts" target="_blank">View on YouTube →</a></p>';
-            document.getElementById('loadingShorts').classList.remove('loading');
         }
+    } catch(e) {
+        grid.innerHTML = '<div class="no-content">Could not load streams. <a href="https://www.youtube.com/@LoveFlappy/streams" target="_blank">View on YouTube →</a></div>';
+        grid.style.display = 'block';
     }
+    document.getElementById('loadingStreams').style.display = 'none';
+}
 
-    async function checkLiveStatus() {
-        try {
-            const data = await fetchYT('channels', {
-                id: CHANNEL_ID, part: 'snippet'
-            });
-            const ch = data.items?.[0];
-            if (ch?.snippet?.liveBroadcastContent === 'live') {
-                document.getElementById('liveDot').classList.add('active');
-            }
-        } catch(e) {}
+async function loadShorts() {
+    loaded.shorts = true;
+    try {
+        const data = await fetchYT('search', {
+            channelId: CHANNEL_ID, part: 'snippet,id', type: 'video', videoDuration: 'short', order: 'date', maxResults: '18'
+        });
+        const grid = document.getElementById('shortsGrid');
+        grid.innerHTML = '';
+        (data.items || []).forEach(item => {
+            grid.appendChild(makeCard(
+                item.id.videoId, item.snippet.title,
+                item.snippet.thumbnails.medium.url,
+                timeAgo(item.snippet.publishedAt), false, true
+            ));
+        });
+        document.getElementById('loadingShorts').style.display = 'none';
+        grid.style.display = 'grid';
+    } catch(e) {
+        const el = document.getElementById('loadingShorts');
+        el.innerHTML = '<p class="no-content">Could not load shorts. <a href="https://www.youtube.com/@LoveFlappy/shorts" target="_blank">View on YouTube →</a></p>';
+        el.classList.remove('loading');
     }
+}
 
-    // Boot
-    loadVideos();
-    checkLiveStatus();
+async function checkLiveStatus() {
+    try {
+        const data = await fetchYT('channels', { id: CHANNEL_ID, part: 'snippet' });
+        if (data.items?.[0]?.snippet?.liveBroadcastContent === 'live') {
+            document.getElementById('liveDot').classList.add('active');
+        }
+    } catch(e) {}
+}
+
+loadVideos();
+checkLiveStatus();
 </script>
 </body>
 </html>

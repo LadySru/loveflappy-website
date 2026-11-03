@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games & Media ✦ LoveFlappy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --pink: #F472B6; --rose: #FB7185; --lavender: #A78BFA;
+            --violet: #7C3AED; --cosmic: #C084FC; --nebula: #818CF8;
+            --teal: #34D399; --gold: #FBBF24;
+            --deep: #0D0618; --surface: rgba(255,255,255,0.05);
+            --border: rgba(167,139,250,0.25);
+            --glow-pink: rgba(244,114,182,0.4); --glow-violet: rgba(124,58,237,0.4);
+        }
+        body { font-family: 'Nunito', sans-serif; background: var(--deep); color: #e2d9f3; overflow-x: hidden; }
+
+        .galaxy-bg {
+            position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(ellipse at 20% 20%, #1a0533 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 70%, #0a1a3a 0%, transparent 55%),
+                        radial-gradient(ellipse at 50% 50%, #12022e 0%, #0D0618 100%);
+        }
+        .nebula-layer {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 30% 60%, rgba(192,132,252,0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 30%, rgba(129,140,248,0.10) 0%, transparent 45%);
+        }
+        #star-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        .sparkle-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .sp {
+            position: absolute; font-size: 13px;
+            animation: twinkle var(--d, 2.5s) ease-in-out infinite var(--delay, 0s);
+        }
+        @keyframes twinkle { 0%,100%{opacity:.1;transform:scale(.7);} 50%{opacity:.9;transform:scale(1.3);} }
+
+        header {
+            position: fixed; top: 0; width: 100%;
+            padding: 14px 48px; background: rgba(13,6,24,0.88); backdrop-filter: blur(20px);
+            z-index: 1000; border-bottom: 1px solid rgba(167,139,250,0.3);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img {
+            width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--cosmic);
+            box-shadow: 0 0 16px var(--glow-violet), 0 0 32px rgba(192,132,252,0.2);
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500; font-style: italic;
+            background: linear-gradient(90deg, var(--cosmic), var(--pink), var(--lavender));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        nav { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        nav a {
+            color: #c4b5fd; text-decoration: none; padding: 6px 14px; border-radius: 999px;
+            font-size: 13px; font-weight: 600; transition: all .2s;
+        }
+        nav a:hover, nav a.active { color: #fff; background: rgba(167,139,250,0.18); }
+        .nav-streams {
+            background: linear-gradient(135deg, var(--violet), var(--pink)) !important;
+            color: #fff !important; box-shadow: 0 4px 18px rgba(124,58,237,0.45);
+        }
+        .nav-streams:hover { opacity:.9; transform:translateY(-1px); }
+
+        .page-hero { padding: 130px 24px 50px; text-align: center; position: relative; }
+        .page-hero-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 500px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(129,140,248,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .page-title {
+            font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 500;
+            background: linear-gradient(135deg, #93c5fd, var(--lavender), var(--teal), var(--cosmic));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px; position: relative; z-index: 1;
+        }
+        .page-subtitle { font-size: 14px; color: #818cf8; letter-spacing: .15em; position: relative; z-index: 1; }
+
+        /* Tab bar */
+        .media-tabs {
+            display: flex; gap: 0; justify-content: center; flex-wrap: wrap;
+            padding: 0 24px 40px; position: relative; z-index: 1;
+            border-bottom: 1px solid rgba(167,139,250,0.15);
+            max-width: 900px; margin: 0 auto; margin-bottom: 40px;
+        }
+        .media-tab-btn {
+            padding: 11px 28px; background: none; border: none;
+            color: #7c6fa0; font-family: 'Nunito', sans-serif;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            border-bottom: 2.5px solid transparent; margin-bottom: -1px;
+            letter-spacing: .5px; transition: all .2s;
+        }
+        .media-tab-btn:hover { color: #d8b4fe; }
+        .media-tab-btn.active { color: #e0aaff; border-bottom-color: var(--nebula); }
+
+        .media-panel { display: none; }
+        .media-panel.active { display: block; }
+
+        /* Section wrapping */
+        .section-wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px 60px; position: relative; z-index: 1; }
+        .sec-header {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Playfair Display', serif; font-size: 16px; color: #818cf8; font-style: italic;
+            margin-bottom: 20px;
+        }
+        .sec-header::after { content: ''; flex: 1; height: 1px; background: rgba(129,140,248,0.18); }
+
+        /* Games grid */
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 16px; margin-bottom: 48px; }
+        .game-card {
+            border-radius: 18px; overflow: hidden;
+            border: 1px solid rgba(129,140,248,0.22);
+            background: rgba(255,255,255,0.04);
+            transition: all .3s; cursor: pointer;
+        }
+        .game-card:hover { transform: translateY(-5px); border-color: rgba(129,140,248,0.55); box-shadow: 0 14px 40px rgba(99,102,241,0.25); }
+        .game-img {
+            height: 120px; display: flex; align-items: center; justify-content: center;
+            font-size: 52px;
+        }
+        .game-info { padding: 14px 16px; }
+        .game-title { font-size: 15px; font-weight: 700; color: #e2d9f3; margin-bottom: 3px; }
+        .game-genre { font-size: 12px; color: #818cf8; margin-bottom: 10px; }
+        .game-stats { display: flex; align-items: center; justify-content: space-between; }
+        .game-hrs { font-size: 12px; color: #a5b4fc; font-weight: 700; }
+        .status-pill {
+            font-size: 10px; padding: 3px 10px; border-radius: 999px; font-weight: 700;
+        }
+        .s-playing { background: rgba(244,114,182,0.15); color: #fda4af; border: 1px solid rgba(244,114,182,0.3); }
+        .s-completed { background: rgba(52,211,153,0.13); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.25); }
+        .s-shelved { background: rgba(167,139,250,0.13); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.25); }
+        .s-love { background: rgba(192,132,252,0.15); color: #d8b4fe; border: 1px solid rgba(192,132,252,0.3); }
+
+        /* Screenshot / clip grid */
+        .shots-grid { columns: 3; column-gap: 14px; margin-bottom: 48px; }
+        @media (max-width: 900px)  { .shots-grid { columns: 2; } }
+        @media (max-width: 500px)  { .shots-grid { columns: 1; } }
+
+        .shot-card {
+            break-inside: avoid; margin-bottom: 14px; border-radius: 14px; overflow: hidden;
+            border: 1px solid rgba(129,140,248,0.2); background: rgba(255,255,255,0.04);
+            transition: all .25s; cursor: pointer;
+        }
+        .shot-card:hover { transform: translateY(-4px); border-color: rgba(129,140,248,0.5); box-shadow: 0 10px 30px rgba(99,102,241,0.2); }
+        .shot-img {
+            width: 100%; display: flex; align-items: center; justify-content: center; font-size: 54px;
+        }
+        .shot-img img { width: 100%; display: block; object-fit: cover; }
+        .shot-info { padding: 10px 12px; }
+        .shot-game { font-size: 11px; color: #818cf8; margin-bottom: 2px; font-weight: 700; letter-spacing: .04em; }
+        .shot-caption { font-size: 12px; color: #c4b5fd; }
+
+        /* Wishlist */
+        .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 12px; }
+        .wish-card {
+            border-radius: 14px; padding: 16px;
+            border: 1px dashed rgba(167,139,250,0.2);
+            background: rgba(255,255,255,0.03);
+            transition: all .25s;
+        }
+        .wish-card:hover { border-color: rgba(167,139,250,0.45); background: rgba(167,139,250,0.06); }
+        .wish-icon { font-size: 28px; margin-bottom: 8px; }
+        .wish-title { font-size: 13px; font-weight: 700; color: #d8b4fe; margin-bottom: 3px; }
+        .wish-genre { font-size: 11px; color: #7c6fa0; }
+
+        /* Steam recently played */
+        .steam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 14px; margin-bottom: 48px; }
+        .steam-card {
+            border-radius: 16px; overflow: hidden; border: 1px solid rgba(59,130,246,0.22);
+            background: rgba(255,255,255,0.04); transition: all .3s; text-decoration: none; display: block;
+        }
+        .steam-card:hover { transform: translateY(-4px); border-color: rgba(96,165,250,0.55); box-shadow: 0 12px 36px rgba(37,99,235,0.25); }
+        .steam-banner { width: 100%; aspect-ratio: 460/215; object-fit: cover; display: block; background: #0a1a3a; }
+        .steam-info { padding: 12px 14px; }
+        .steam-name { font-size: 14px; font-weight: 700; color: #e2d9f3; margin-bottom: 4px; }
+        .steam-playtime { font-size: 12px; color: #93c5fd; font-weight: 600; }
+        .steam-bar-wrap { height: 3px; background: rgba(59,130,246,0.15); border-radius: 2px; margin-top: 8px; }
+        .steam-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #818cf8); border-radius: 2px; transition: width .6s ease; }
+
+        .api-loading { text-align: center; padding: 60px 20px; color: #7c6fa0; font-size: 14px; }
+        .api-loading::after { content:''; display:block; width:32px; height:32px; border:3px solid rgba(167,139,250,0.2); border-top-color:var(--cosmic); border-radius:50%; margin:14px auto 0; animation:spin .8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .api-error { text-align: center; padding: 48px 24px; color: #7c6fa0; font-size: 13px; line-height: 1.6; }
+        .api-error a { color: var(--cosmic); text-decoration: none; }
+        .api-error a:hover { color: var(--pink); }
+
+        /* Share CTA */
+        .share-cta {
+            max-width: 600px; margin: 0 auto 60px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(129,140,248,0.25);
+            border-radius: 24px; padding: 44px 32px; text-align: center;
+            position: relative; z-index: 1;
+        }
+        .share-cta-icon { font-size: 46px; margin-bottom: 14px; }
+        .share-cta h3 {
+            font-family: 'Playfair Display', serif; font-size: 22px;
+            background: linear-gradient(90deg, #93c5fd, var(--lavender));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px;
+        }
+        .share-cta p { color: #9d84c2; line-height: 1.65; font-size: 14px; margin-bottom: 22px; }
+        .share-cta-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .cta-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 24px; border-radius: 999px;
+            font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
+            text-decoration: none; transition: all .25s;
+        }
+        .cta-btn-primary { background: linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; box-shadow:0 6px 22px rgba(99,102,241,0.4); }
+        .cta-btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(99,102,241,0.55); }
+        .cta-btn-secondary { background:rgba(255,255,255,0.06); color:#c4b5fd; border:1px solid rgba(167,139,250,0.3); }
+        .cta-btn-secondary:hover { background:rgba(167,139,250,0.15); transform:translateY(-2px); }
+
+        footer {
+            text-align: center; padding: 48px 24px 32px;
+            background: rgba(13,6,24,0.9); border-top: 1px solid rgba(167,139,250,0.2);
+            color: #5a4d72; position: relative; z-index: 1;
+        }
+        .footer-heart { font-family:'Playfair Display',serif; font-size:15px; color:#a78bfa; font-style:italic; margin-bottom:18px; }
+        .footer-socials { display:flex; justify-content:center; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+        .footer-social {
+            width:44px; height:44px; border-radius:12px;
+            display:flex; align-items:center; justify-content:center;
+            background:rgba(255,255,255,0.04); border:1px solid rgba(167,139,250,0.18);
+            color:#c4b5fd; text-decoration:none; font-size:20px; transition:all .25s;
+        }
+        .footer-social:hover { transform:translateY(-4px); border-color:var(--cosmic); background:rgba(192,132,252,0.12); box-shadow:0 8px 24px rgba(124,58,237,0.3); }
+        footer p { font-size:12px; }
+
+        @media (max-width: 768px) {
+            header { padding: 12px 16px; }
+            .page-title { font-size: 36px; }
+            nav a { padding: 5px 10px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="galaxy-bg"><div class="nebula-layer"></div></div>
+<canvas id="star-canvas"></canvas>
+<div class="sparkle-overlay" id="sparkleOverlay"></div>
+
+<header>
+    <a href="index.html" class="logo-link">
+        <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="logo-img">
+        <span class="logo-text">LoveFlappy</span>
+    </a>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="cosplay.html">✦ Cosplays</a>
+        <a href="media.html" class="active">🎮 Media</a>
+        <a href="community.html">🔮 Community</a>
+        <a href="streams.html" class="nav-streams">🔴 Streams</a>
+    </nav>
+</header>
+
+<div class="page-hero">
+    <div class="page-hero-glow"></div>
+    <div class="page-title">🎮 Games & Media</div>
+    <div class="page-subtitle">✧ the games i live in · screenshots · clips ✧</div>
+</div>
+
+<div style="max-width:900px;margin:0 auto;padding:0 24px;position:relative;z-index:1;">
+    <div class="media-tabs">
+        <button class="media-tab-btn active" onclick="switchMedia('games',this)">🎮 Games</button>
+        <button class="media-tab-btn" onclick="switchMedia('steam',this)">🟦 Steam</button>
+        <button class="media-tab-btn" onclick="switchMedia('screenshots',this)">📸 Screenshots</button>
+        <button class="media-tab-btn" onclick="switchMedia('wishlist',this)">🌟 Wishlist</button>
+    </div>
+</div>
+
+<!-- Games panel -->
+<div class="media-panel active" id="panel-games">
+    <div class="section-wrap">
+        <div class="sec-header">🎮 currently playing</div>
+        <div class="games-grid">
+            <!-- Add/edit games below. Replace emoji with <img> if you have a cover art. -->
+            <div class="game-card">
+                <div class="game-img" style="background:linear-gradient(135deg,#1a0a2e,#2a1040);">🗡️</div>
+                <div class="game-info">
+                    <div class="game-title">Your game title</div>
+                    <div class="game-genre">RPG · Adventure</div>
+                    <div class="game-stats">
+                        <span class="game-hrs">✦ 320 hrs</span>
+                        <span class="status-pill s-playing">▶ playing</span>
+                    </div>
+                </div>
+            </div>
+            <div class="game-card">
+                <div class="game-img" style="background:linear-gradient(135deg,#0a1a2a,#1a0a30);">🏹</div>
+                <div class="game-info">
+                    <div class="game-title">Your game title</div>
+                    <div class="game-genre">Action · Fantasy</div>
+                    <div class="game-stats">
+                        <span class="game-hrs">✦ 180 hrs</span>
+                        <span class="status-pill s-playing">▶ playing</span>
+                    </div>
+                </div>
+            </div>
+            <div class="game-card">
+                <div class="game-img" style="background:linear-gradient(135deg,#0a2a1a,#101a0a);">🌷</div>
+                <div class="game-info">
+                    <div class="game-title">Your game title</div>
+                    <div class="game-genre">Simulation · Cozy</div>
+                    <div class="game-stats">
+                        <span class="game-hrs">✦ 97 hrs</span>
+                        <span class="status-pill s-playing">▶ playing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sec-header">💖 all-time faves</div>
+        <div class="games-grid">
+            <div class="game-card">
+                <div class="game-img" style="background:linear-gradient(135deg,#2a1a0a,#1a0a2a);">⚔️</div>
+                <div class="game-info">
+                    <div class="game-title">Your fave game</div>
+                    <div class="game-genre">Action RPG</div>
+                    <div class="game-stats">
+                        <span class="game-hrs">✦ 600+ hrs</span>
+                        <span class="status-pill s-love">♡ love</span>
+                    </div>
+                </div>
+            </div>
+            <div class="game-card">
+                <div class="game-img" style="background:linear-gradient(135deg,#0a2a2a,#1a1040);">🌙</div>
+                <div class="game-info">
+                    <div class="game-title">Your fave game</div>
+                    <div class="game-genre">Adventure · Story</div>
+                    <div class="game-stats">
+                        <span class="game-hrs">✦ 200+ hrs</span>
+                        <span class="status-pill s-completed">✓ completed</span>
+                    </div>
+                </div>
+            </div>
+            <div class="game-card">
+                <div class="game-img" style="background:linear-gradient(135deg,#2a0a1a,#0a0a2a);">🔮</div>
+                <div class="game-info">
+                    <div class="game-title">Your fave game</div>
+                    <div class="game-genre">JRPG · Fantasy</div>
+                    <div class="game-stats">
+                        <span class="game-hrs">✦ 400+ hrs</span>
+                        <span class="status-pill s-love">♡ love</span>
+                    </div>
+                </div>
+            </div>
+            <div class="game-card">
+                <div class="game-img" style="background:linear-gradient(135deg,#1a2a0a,#0a1a2a);">🌟</div>
+                <div class="game-info">
+                    <div class="game-title">Your fave game</div>
+                    <div class="game-genre">Puzzle · Cozy</div>
+                    <div class="game-stats">
+                        <span class="game-hrs">✦ 150 hrs</span>
+                        <span class="status-pill s-completed">✓ completed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Steam panel -->
+<div class="media-panel" id="panel-steam">
+    <div class="section-wrap">
+        <div class="sec-header">🟦 recently played on steam</div>
+        <div id="steamGrid" class="steam-grid">
+            <div class="api-loading" style="grid-column:1/-1;">Loading Steam activity</div>
+        </div>
+    </div>
+</div>
+
+<!-- Screenshots panel -->
+<div class="media-panel" id="panel-screenshots">
+    <div class="section-wrap">
+        <div class="sec-header">📸 gaming screenshots & clips</div>
+        <div class="shots-grid">
+            <!-- Replace emoji placeholders with <img src="your-screenshot.jpg"> -->
+            <div class="shot-card">
+                <div class="shot-img" style="background:linear-gradient(135deg,#1a0533,#0a1a3a);padding:44px 0;">🌌</div>
+                <div class="shot-info">
+                    <div class="shot-game">Your game title</div>
+                    <div class="shot-caption">Add a caption for this moment ✨</div>
+                </div>
+            </div>
+            <div class="shot-card">
+                <div class="shot-img" style="background:linear-gradient(135deg,#0a2a1a,#0a0a2a);padding:56px 0;">⚔️</div>
+                <div class="shot-info">
+                    <div class="shot-game">Your game title</div>
+                    <div class="shot-caption">Add a caption for this moment ✨</div>
+                </div>
+            </div>
+            <div class="shot-card">
+                <div class="shot-img" style="background:linear-gradient(135deg,#2a1a0a,#0a1a2a);padding:36px 0;">🗡️</div>
+                <div class="shot-info">
+                    <div class="shot-game">Your game title</div>
+                    <div class="shot-caption">Add a caption for this moment ✨</div>
+                </div>
+            </div>
+            <div class="shot-card">
+                <div class="shot-img" style="background:linear-gradient(135deg,#1a0a2a,#2a1a0a);padding:48px 0;">🌸</div>
+                <div class="shot-info">
+                    <div class="shot-game">Your game title</div>
+                    <div class="shot-caption">Add a caption for this moment ✨</div>
+                </div>
+            </div>
+            <div class="shot-card">
+                <div class="shot-img" style="background:linear-gradient(135deg,#0a1a2a,#1a0a0a);padding:52px 0;">🔮</div>
+                <div class="shot-info">
+                    <div class="shot-game">Your game title</div>
+                    <div class="shot-caption">Add a caption for this moment ✨</div>
+                </div>
+            </div>
+            <div class="shot-card">
+                <div class="shot-img" style="background:linear-gradient(135deg,#2a0a2a,#0a2a1a);padding:40px 0;">🌙</div>
+                <div class="shot-info">
+                    <div class="shot-game">Your game title</div>
+                    <div class="shot-caption">Add a caption for this moment ✨</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="share-cta">
+            <div class="share-cta-icon">🎮</div>
+            <h3>Got gaming screenshots?</h3>
+            <p>Share your own gaming moments in the Discord! Show off your best clips, epic builds, and in-game art in the community ✨</p>
+            <div class="share-cta-btns">
+                <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="cta-btn cta-btn-primary">💬 Join Discord</a>
+                <a href="community.html" class="cta-btn cta-btn-secondary">🔮 Community Hub</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Wishlist panel -->
+<div class="media-panel" id="panel-wishlist">
+    <div class="section-wrap">
+        <div class="sec-header">🌟 on my wishlist</div>
+        <div class="wishlist-grid">
+            <div class="wish-card">
+                <div class="wish-icon">🌌</div>
+                <div class="wish-title">Game title here</div>
+                <div class="wish-genre">RPG · Open world</div>
+            </div>
+            <div class="wish-card">
+                <div class="wish-icon">🧚</div>
+                <div class="wish-title">Game title here</div>
+                <div class="wish-genre">Fantasy · Story</div>
+            </div>
+            <div class="wish-card">
+                <div class="wish-icon">🏰</div>
+                <div class="wish-title">Game title here</div>
+                <div class="wish-genre">Strategy · Adventure</div>
+            </div>
+            <div class="wish-card">
+                <div class="wish-icon">🌸</div>
+                <div class="wish-title">Game title here</div>
+                <div class="wish-genre">Simulation · Cozy</div>
+            </div>
+            <div class="wish-card">
+                <div class="wish-icon">⚡</div>
+                <div class="wish-title">Game title here</div>
+                <div class="wish-genre">Action · JRPG</div>
+            </div>
+            <div class="wish-card">
+                <div class="wish-icon">🔮</div>
+                <div class="wish-title">Game title here</div>
+                <div class="wish-genre">Mystery · Puzzle</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-heart">✦ made with lots of love ✦</div>
+    <div class="footer-socials">
+        <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="footer-social">📺</a>
+        <a href="https://www.twitch.tv/loveflappy" target="_blank" class="footer-social">🎮</a>
+        <a href="https://www.tiktok.com/@oflappy" target="_blank" class="footer-social">🎵</a>
+        <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="footer-social">💬</a>
+        <a href="https://x.com/EsotericFlap" target="_blank" class="footer-social">🐦</a>
+    </div>
+    <p>&copy; 2025 LoveFlappy · All rights reserved</p>
+</footer>
+
+<script>
+(function(){
+    const canvas=document.getElementById('star-canvas'), ctx=canvas.getContext('2d');
+    let W,H,stars=[];
+    function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+    const colors=['#ffffff','#e0aaff','#c084fc','#818cf8','#f472b6','#93c5fd'];
+    function mkStar(){ return {x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.2,c:colors[Math.floor(Math.random()*colors.length)],phase:Math.random()*Math.PI*2,speed:Math.random()*.6+.3}; }
+    function init(){ resize(); stars=Array.from({length:180},mkStar); }
+    let t=0;
+    function draw(){ ctx.clearRect(0,0,W,H); t+=.012; stars.forEach(s=>{ const a=.2+.8*(.5+.5*Math.sin(t*s.speed+s.phase)); ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle=s.c; ctx.globalAlpha=a; ctx.fill(); }); ctx.globalAlpha=1; requestAnimationFrame(draw); }
+    window.addEventListener('resize',resize); init(); draw();
+})();
+(function(){
+    const glyphs=['✦','✧','⋆','˚','✿','♡','★'];
+    const colors=['#818cf8','#a78bfa','#c084fc','#93c5fd','#6ee7b7'];
+    const container=document.getElementById('sparkleOverlay');
+    for(let i=0;i<22;i++){
+        const el=document.createElement('span'); el.className='sp';
+        el.textContent=glyphs[Math.floor(Math.random()*glyphs.length)];
+        const dur=(Math.random()*2+2).toFixed(2), delay=(Math.random()*3).toFixed(2);
+        el.style.cssText=`left:${Math.random()*98}%;top:${Math.random()*100}%;color:${colors[Math.floor(Math.random()*colors.length)]};font-size:${(Math.random()*7+9).toFixed(1)}px;--d:${dur}s;--delay:-${delay}s;`;
+        container.appendChild(el);
+    }
+})();
+
+const loaded = { steam: false };
+
+function switchMedia(id, btn) {
+    document.querySelectorAll('.media-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.media-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + id).classList.add('active');
+    if (id === 'steam' && !loaded.steam)  loadSteam();
+}
+
+function timeAgo(ms) {
+    const s = Math.floor((Date.now() - ms) / 1000);
+    if (s < 60)      return s + 's ago';
+    if (s < 3600)    return Math.floor(s/60) + 'm ago';
+    if (s < 86400)   return Math.floor(s/3600) + 'h ago';
+    if (s < 2592000) return Math.floor(s/86400) + 'd ago';
+    return Math.floor(s/2592000) + 'mo ago';
+}
+
+function fmtHrs(mins) {
+    if (!mins) return '0 hrs';
+    if (mins < 60) return mins + ' min';
+    const h = Math.floor(mins / 60);
+    return h.toLocaleString() + ' hrs';
+}
+
+async function loadSteam() {
+    loaded.steam = true;
+    const grid = document.getElementById('steamGrid');
+    try {
+        const res = await fetch('/api/steam?action=recent');
+        const data = await res.json();
+        const games = data.response?.games || [];
+        if (!games.length) throw new Error('no games');
+
+        // Find max playtime_2weeks for bar scaling
+        const maxPt = Math.max(...games.map(g => g.playtime_2weeks || 0), 1);
+
+        grid.innerHTML = '';
+        games.forEach(g => {
+            const appId   = g.appid;
+            const name    = g.name || 'Unknown game';
+            const total   = fmtHrs(g.playtime_forever);
+            const recent  = g.playtime_2weeks || 0;
+            const pct     = Math.round((recent / maxPt) * 100);
+            const banner  = `https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg`;
+            const link    = `https://store.steampowered.com/app/${appId}/`;
+            const card = document.createElement('a');
+            card.className = 'steam-card';
+            card.href = link; card.target = '_blank'; card.rel = 'noopener';
+            card.innerHTML = `
+                <img class="steam-banner" src="${banner}" alt="${name}" loading="lazy"
+                     onerror="this.style.background='linear-gradient(135deg,#0a1a3a,#1a0533)';this.removeAttribute('src');">
+                <div class="steam-info">
+                    <div class="steam-name">${name}</div>
+                    <div class="steam-playtime">✦ ${total} total${recent ? ` · ${fmtHrs(recent)} this week` : ''}</div>
+                    <div class="steam-bar-wrap"><div class="steam-bar" style="width:${pct}%"></div></div>
+                </div>`;
+            grid.appendChild(card);
+        });
+    } catch(e) {
+        grid.innerHTML = `<div class="api-error" style="grid-column:1/-1;">
+            Steam data needs a Steam API key + Steam ID configured in Netlify environment variables.<br><br>
+            <strong style="color:#c4b5fd;">To set up:</strong><br>
+            1. Get a free API key at <a href="https://steamcommunity.com/dev/apikey" target="_blank">steamcommunity.com/dev/apikey</a><br>
+            2. Find your 64-bit Steam ID at <a href="https://steamid.io" target="_blank">steamid.io</a><br>
+            3. Add <code style="color:#93c5fd;">STEAM_API_KEY</code> and <code style="color:#93c5fd;">STEAM_ID</code> in Netlify → Site config → Environment variables
+        </div>`;
+    }
+}
+</script>
+</body>
+</html>
