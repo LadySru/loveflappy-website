@@ -100,6 +100,35 @@
             color: #fff;
             background: rgba(167,139,250,0.18);
         }
+        /* community section */
+        .community-section {
+            max-width: 1280px; margin: 0 auto 60px; padding: 0 24px; position: relative; z-index: 1;
+        }
+        .community-banner {
+            border-radius: 28px; padding: 48px 40px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.16) 0%, rgba(244,114,182,0.10) 100%);
+            border: 1px solid rgba(192,132,252,0.28); text-align: center;
+        }
+        .community-banner .cb-icon { font-size: 48px; margin-bottom: 14px; }
+        .community-banner h2 {
+            font-family: 'Playfair Display', serif; font-size: 30px;
+            background: linear-gradient(135deg, #e0aaff, var(--pink), #93c5fd);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .community-banner p { color: #9d84c2; font-size: 14px; line-height: 1.7; max-width: 520px; margin: 0 auto 28px; }
+        .cb-btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .cb-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 26px; border-radius: 999px; font-family: 'Nunito', sans-serif;
+            font-weight: 700; font-size: 13px; text-decoration: none; transition: all .25s;
+        }
+        .cb-primary { background: linear-gradient(135deg, var(--violet), var(--pink)); color: #fff; box-shadow: 0 6px 24px rgba(124,58,237,0.4); }
+        .cb-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(124,58,237,0.55); }
+        .cb-secondary { background: rgba(255,255,255,0.06); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.3); }
+        .cb-secondary:hover { background: rgba(167,139,250,0.15); transform: translateY(-2px); }
+        .cb-tertiary { background: rgba(255,0,0,0.1); color: #ff8080; border: 1px solid rgba(255,0,0,0.3); }
+        .cb-tertiary:hover { background: rgba(255,0,0,0.2); transform: translateY(-2px); }
         .nav-streams {
             background: linear-gradient(135deg, var(--violet), var(--pink)) !important;
             color: #fff !important;
@@ -436,7 +465,10 @@
     </a>
     <nav>
         <a href="index.html" class="active">Home</a>
-        <a href="streams.html" class="nav-streams">✦ Streams</a>
+        <a href="cosplay.html">✦ Cosplays</a>
+        <a href="media.html">🎮 Media</a>
+        <a href="community.html">🔮 Community</a>
+        <a href="streams.html" class="nav-streams">🔴 Streams</a>
     </nav>
 </header>
 
@@ -493,6 +525,20 @@
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.3 2h-3L12 6.3 8.9 2H3l6.5 9.3L3 22h3l3.7-5.3L13.4 22H19l-6.8-9.8L18.3 2z"/></svg>
                 X
             </a>
+        </div>
+    </div>
+</div>
+
+<!-- Community CTA -->
+<div class="community-section">
+    <div class="community-banner">
+        <div class="cb-icon">🌌</div>
+        <h2>Join the Cosmic Community ✦</h2>
+        <p>Hang out on Discord, share your cosplays and gaming screenshots, catch live streams, and be part of the galaxy! Every follow, comment and share means the world ♡</p>
+        <div class="cb-btn-row">
+            <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="cb-btn cb-primary">💬 Join Discord</a>
+            <a href="cosplay.html" class="cb-btn cb-secondary">✦ Cosplay Gallery</a>
+            <a href="https://www.youtube.com/@LoveFlappy?sub_confirmation=1" target="_blank" class="cb-btn cb-tertiary">📺 Subscribe on YouTube</a>
         </div>
     </div>
 </div>

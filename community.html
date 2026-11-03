@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Hub ✦ LoveFlappy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --pink: #F472B6; --rose: #FB7185; --lavender: #A78BFA;
+            --violet: #7C3AED; --cosmic: #C084FC; --nebula: #818CF8;
+            --teal: #34D399; --gold: #FBBF24;
+            --deep: #0D0618; --border: rgba(167,139,250,0.25);
+            --glow-violet: rgba(124,58,237,0.4);
+        }
+        body { font-family: 'Nunito', sans-serif; background: var(--deep); color: #e2d9f3; overflow-x: hidden; }
+
+        .galaxy-bg {
+            position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(ellipse at 20% 20%, #1a0533 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 70%, #0a1a3a 0%, transparent 55%),
+                        radial-gradient(ellipse at 50% 50%, #12022e 0%, #0D0618 100%);
+        }
+        .nebula-layer {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 30% 60%, rgba(192,132,252,0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 30%, rgba(129,140,248,0.10) 0%, transparent 45%),
+                        radial-gradient(ellipse at 60% 80%, rgba(244,114,182,0.08) 0%, transparent 40%);
+        }
+        #star-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        .sparkle-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .sp { position: absolute; font-size: 13px; animation: twinkle var(--d,2.5s) ease-in-out infinite var(--delay,0s); }
+        @keyframes twinkle { 0%,100%{opacity:.1;transform:scale(.7);} 50%{opacity:.9;transform:scale(1.3);} }
+
+        header {
+            position: fixed; top: 0; width: 100%;
+            padding: 14px 48px; background: rgba(13,6,24,0.88); backdrop-filter: blur(20px);
+            z-index: 1000; border-bottom: 1px solid rgba(167,139,250,0.3);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img {
+            width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--cosmic);
+            box-shadow: 0 0 16px var(--glow-violet);
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500; font-style: italic;
+            background: linear-gradient(90deg, var(--cosmic), var(--pink), var(--lavender));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        nav { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        nav a { color: #c4b5fd; text-decoration: none; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; transition: all .2s; }
+        nav a:hover, nav a.active { color: #fff; background: rgba(167,139,250,0.18); }
+        .nav-streams { background: linear-gradient(135deg, var(--violet), var(--pink)) !important; color: #fff !important; box-shadow: 0 4px 18px rgba(124,58,237,0.45); }
+        .nav-streams:hover { opacity:.9; transform:translateY(-1px); }
+
+        /* Page hero */
+        .page-hero { padding: 130px 24px 60px; text-align: center; position: relative; }
+        .page-hero-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 600px; height: 350px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(192,132,252,0.1) 0%, transparent 70%);
+            pointer-events: none; animation: pulse-glow 4s ease-in-out infinite;
+        }
+        @keyframes pulse-glow { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.7;} 50%{transform:translate(-50%,-50%) scale(1.08);opacity:1;} }
+        .page-title {
+            font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 500;
+            background: linear-gradient(135deg, #e0aaff, var(--pink), #93c5fd, var(--cosmic));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px; position: relative; z-index: 1;
+        }
+        .page-subtitle { font-size: 14px; color: #a78bfa; letter-spacing: .15em; position: relative; z-index: 1; margin-bottom: 36px; }
+
+        /* Stats row */
+        .stats-row {
+            display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+            max-width: 700px; margin: 0 auto 60px; position: relative; z-index: 1; padding: 0 24px;
+        }
+        .stat-pill {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(167,139,250,0.25);
+            border-radius: 999px; padding: 10px 22px;
+        }
+        .stat-icon { font-size: 20px; }
+        .stat-text { }
+        .stat-num { font-size: 18px; font-weight: 800; color: #e0aaff; line-height: 1; }
+        .stat-label { font-size: 11px; color: #7c6fa0; letter-spacing: .05em; }
+
+        /* Content */
+        .hub-wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1; }
+
+        .sec-header {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Playfair Display', serif; font-size: 16px; color: #c084fc; font-style: italic;
+            margin-bottom: 20px;
+        }
+        .sec-header::after { content:''; flex:1; height:1px; background:rgba(167,139,250,0.18); }
+
+        /* Platform cards */
+        .platform-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 14px; margin-bottom: 48px; }
+        .platform-card {
+            border-radius: 20px; padding: 24px; border: 1px solid rgba(167,139,250,0.2);
+            background: rgba(255,255,255,0.04); transition: all .3s; cursor: pointer;
+            text-decoration: none; display: block;
+        }
+        .platform-card:hover { transform: translateY(-5px); box-shadow: var(--glow-shadow, 0 14px 40px rgba(124,58,237,0.3)); border-color: var(--pc, rgba(192,132,252,0.5)); }
+        .pc-icon { font-size: 36px; margin-bottom: 12px; }
+        .pc-name { font-size: 16px; font-weight: 800; color: #e2d9f3; margin-bottom: 4px; }
+        .pc-handle { font-size: 13px; color: #a78bfa; margin-bottom: 12px; }
+        .pc-desc { font-size: 12px; color: #7c6fa0; line-height: 1.55; margin-bottom: 14px; }
+        .pc-follow-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; border-radius: 999px; font-family: 'Nunito',sans-serif;
+            font-size: 12px; font-weight: 700; text-decoration: none; letter-spacing: .3px;
+            color: #fff; transition: all .2s;
+        }
+        .pc-follow-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+        /* "How to get involved" section */
+        .how-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 14px; margin-bottom: 48px; }
+        .how-card {
+            border-radius: 18px; padding: 22px 20px; text-align: center;
+            border: 1px solid rgba(167,139,250,0.18); background: rgba(255,255,255,0.03);
+        }
+        .how-icon { font-size: 32px; margin-bottom: 10px; }
+        .how-title { font-size: 14px; font-weight: 700; color: #d8b4fe; margin-bottom: 6px; }
+        .how-desc { font-size: 12px; color: #7c6fa0; line-height: 1.55; }
+
+        /* Notif CTA */
+        .notif-banner {
+            border-radius: 24px; padding: 40px 36px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(244,114,182,0.12) 100%);
+            border: 1px solid rgba(192,132,252,0.3);
+            display: flex; align-items: center; gap: 28px;
+            flex-wrap: wrap; margin-bottom: 48px;
+        }
+        .notif-icon { font-size: 52px; flex-shrink: 0; }
+        .notif-text { flex: 1; min-width: 220px; }
+        .notif-text h3 {
+            font-family: 'Playfair Display', serif; font-size: 22px;
+            background: linear-gradient(90deg, var(--cosmic), var(--pink));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+        .notif-text p { font-size: 13px; color: #9d84c2; line-height: 1.6; }
+        .notif-btns { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+        .notif-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 22px; border-radius: 999px; font-family: 'Nunito',sans-serif;
+            font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap;
+            transition: all .25s;
+        }
+        .nb-yt { background: rgba(255,0,0,0.15); color: #ff8080; border: 1px solid rgba(255,0,0,0.35); }
+        .nb-yt:hover { background: rgba(255,0,0,0.28); transform: translateY(-2px); }
+        .nb-tw { background: rgba(145,70,255,0.18); color: #c4a0ff; border: 1px solid rgba(145,70,255,0.4); }
+        .nb-tw:hover { background: rgba(145,70,255,0.3); transform: translateY(-2px); }
+
+        footer {
+            text-align: center; padding: 48px 24px 32px;
+            background: rgba(13,6,24,0.9); border-top: 1px solid rgba(167,139,250,0.2);
+            color: #5a4d72; position: relative; z-index: 1;
+        }
+        .footer-heart { font-family:'Playfair Display',serif; font-size:15px; color:#a78bfa; font-style:italic; margin-bottom:18px; }
+        .footer-socials { display:flex; justify-content:center; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+        .footer-social {
+            width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+            background:rgba(255,255,255,0.04); border:1px solid rgba(167,139,250,0.18);
+            color:#c4b5fd; text-decoration:none; font-size:20px; transition:all .25s;
+        }
+        .footer-social:hover { transform:translateY(-4px); border-color:var(--cosmic); background:rgba(192,132,252,0.12); box-shadow:0 8px 24px rgba(124,58,237,0.3); }
+        footer p { font-size:12px; }
+
+        @media (max-width: 768px) {
+            header { padding: 12px 16px; }
+            .page-title { font-size: 36px; }
+            nav a { padding: 5px 10px; font-size: 12px; }
+            .notif-banner { flex-direction: column; text-align: center; }
+            .notif-btns { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="galaxy-bg"><div class="nebula-layer"></div></div>
+<canvas id="star-canvas"></canvas>
+<div class="sparkle-overlay" id="sparkleOverlay"></div>
+
+<header>
+    <a href="index.html" class="logo-link">
+        <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="logo-img">
+        <span class="logo-text">LoveFlappy</span>
+    </a>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="cosplay.html">✦ Cosplays</a>
+        <a href="media.html">🎮 Media</a>
+        <a href="community.html" class="active">🔮 Community</a>
+        <a href="streams.html" class="nav-streams">🔴 Streams</a>
+    </nav>
+</header>
+
+<div class="page-hero">
+    <div class="page-hero-glow"></div>
+    <div class="page-title">🔮 Community Hub</div>
+    <div class="page-subtitle">✧ join the galaxy · follow the journey · be part of the magic ✧</div>
+
+    <!-- Stats row — update numbers manually or hook into an API -->
+    <div class="stats-row">
+        <div class="stat-pill">
+            <span class="stat-icon">📺</span>
+            <div class="stat-text">
+                <div class="stat-num" id="ytSubs">—</div>
+                <div class="stat-label">YouTube Subs</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <span class="stat-icon">🟣</span>
+            <div class="stat-text">
+                <div class="stat-num">Twitch</div>
+                <div class="stat-label">Live on stream</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <span class="stat-icon">💬</span>
+            <div class="stat-text">
+                <div class="stat-num">Discord</div>
+                <div class="stat-label">Community server</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hub-wrap">
+
+    <!-- Notification CTA -->
+    <div class="notif-banner">
+        <div class="notif-icon">🔔</div>
+        <div class="notif-text">
+            <h3>Never miss a stream or video!</h3>
+            <p>Hit subscribe + the bell on YouTube, follow on Twitch for live notifications, and join Discord for real-time updates. The more places you follow, the less you miss ✨</p>
+        </div>
+        <div class="notif-btns">
+            <a href="https://www.youtube.com/@LoveFlappy?sub_confirmation=1" target="_blank" class="notif-btn nb-yt">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                Subscribe on YouTube
+            </a>
+            <a href="https://www.twitch.tv/loveflappy" target="_blank" class="notif-btn nb-tw">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.6 6H10v4.5h1.6V6zm4.3 0h-1.6v4.5h1.6V6zM2.4 0L0 2.4V21.6h6V24l2.4-2.4H12l4.8-4.8V0H2.4zm16.8 13.2L16 16.4h-3.6L10 18.8v-2.4H4.8V2.4h14.4v10.8z"/></svg>
+                Follow on Twitch
+            </a>
+        </div>
+    </div>
+
+    <!-- Where to find me -->
+    <div class="sec-header">✦ where to find me</div>
+    <div class="platform-grid">
+        <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="platform-card" style="--pc:rgba(255,0,0,0.5);--glow-shadow:0 14px 40px rgba(255,0,0,0.2);">
+            <div class="pc-icon">📺</div>
+            <div class="pc-name">YouTube</div>
+            <div class="pc-handle">@LoveFlappy</div>
+            <div class="pc-desc">Videos, streams, shorts and community posts. Main hub for all content!</div>
+            <span class="pc-follow-btn" style="background:rgba(255,0,0,0.2);border:1px solid rgba(255,0,0,0.4);">Subscribe + 🔔</span>
+        </a>
+        <a href="https://www.twitch.tv/loveflappy" target="_blank" class="platform-card" style="--pc:rgba(145,70,255,0.5);--glow-shadow:0 14px 40px rgba(145,70,255,0.2);">
+            <div class="pc-icon">🟣</div>
+            <div class="pc-name">Twitch</div>
+            <div class="pc-handle">loveflappy</div>
+            <div class="pc-desc">Live gaming sessions! Catch streams in real time and chat with the community.</div>
+            <span class="pc-follow-btn" style="background:rgba(145,70,255,0.2);border:1px solid rgba(145,70,255,0.4);">Follow on Twitch</span>
+        </a>
+        <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="platform-card" style="--pc:rgba(88,101,242,0.5);--glow-shadow:0 14px 40px rgba(88,101,242,0.2);">
+            <div class="pc-icon">💬</div>
+            <div class="pc-name">Discord</div>
+            <div class="pc-handle">Community Server</div>
+            <div class="pc-desc">The main hangout! Chat, share cosplays, gaming screenshots, fan art and more.</div>
+            <span class="pc-follow-btn" style="background:rgba(88,101,242,0.2);border:1px solid rgba(88,101,242,0.4);">Join Server ✦</span>
+        </a>
+        <a href="https://www.tiktok.com/@oflappy" target="_blank" class="platform-card" style="--pc:rgba(255,255,255,0.25);--glow-shadow:0 14px 40px rgba(255,255,255,0.08);">
+            <div class="pc-icon">🎵</div>
+            <div class="pc-name">TikTok</div>
+            <div class="pc-handle">@oflappy</div>
+            <div class="pc-desc">Short clips, cosplay previews, gaming moments and random chaos ✨</div>
+            <span class="pc-follow-btn" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);">Follow on TikTok</span>
+        </a>
+        <a href="https://x.com/EsotericFlap" target="_blank" class="platform-card" style="--pc:rgba(255,255,255,0.2);--glow-shadow:0 14px 40px rgba(255,255,255,0.06);">
+            <div class="pc-icon">🐦</div>
+            <div class="pc-name">X / Twitter</div>
+            <div class="pc-handle">@EsotericFlap</div>
+            <div class="pc-desc">Thoughts, updates, cosplay progress pics and general chaos tweets.</div>
+            <span class="pc-follow-btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);">Follow on X</span>
+        </a>
+        <a href="mailto:Flapjack1238@gmail.com" class="platform-card" style="--pc:rgba(192,132,252,0.4);--glow-shadow:0 14px 40px rgba(192,132,252,0.15);">
+            <div class="pc-icon">📧</div>
+            <div class="pc-name">Business Email</div>
+            <div class="pc-handle">Flapjack1238@gmail.com</div>
+            <div class="pc-desc">Collabs, sponsorships and business enquiries. Always open to cool opportunities!</div>
+            <span class="pc-follow-btn" style="background:rgba(192,132,252,0.15);border:1px solid rgba(192,132,252,0.35);">Send Email ✦</span>
+        </a>
+    </div>
+
+    <!-- How to get involved -->
+    <div class="sec-header">🌟 how to get involved</div>
+    <div class="how-grid">
+        <div class="how-card">
+            <div class="how-icon">📸</div>
+            <div class="how-title">Share your cosplay</div>
+            <div class="how-desc">Post in Discord and you might get featured on the Cosplay Gallery page!</div>
+        </div>
+        <div class="how-card">
+            <div class="how-icon">🎮</div>
+            <div class="how-title">Share gaming moments</div>
+            <div class="how-desc">Drop your best screenshots and clips in the Discord gaming channels.</div>
+        </div>
+        <div class="how-card">
+            <div class="how-icon">🔴</div>
+            <div class="how-title">Catch a live stream</div>
+            <div class="how-desc">Hang out on Twitch or YouTube Live — chat and become part of the community!</div>
+        </div>
+        <div class="how-card">
+            <div class="how-icon">🎨</div>
+            <div class="how-title">Fan art welcome</div>
+            <div class="how-desc">Share fan art in Discord! All art is deeply appreciated and might be reposted ♡</div>
+        </div>
+        <div class="how-card">
+            <div class="how-icon">💬</div>
+            <div class="how-title">Leave comments</div>
+            <div class="how-desc">Comment on YouTube videos and community posts — every message means a lot!</div>
+        </div>
+        <div class="how-card">
+            <div class="how-icon">🌸</div>
+            <div class="how-title">Spread the word</div>
+            <div class="how-desc">Share content with friends who might love it — word of mouth is magic ✨</div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer-heart">✦ made with lots of love ✦</div>
+    <div class="footer-socials">
+        <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="footer-social">📺</a>
+        <a href="https://www.twitch.tv/loveflappy" target="_blank" class="footer-social">🎮</a>
+        <a href="https://www.tiktok.com/@oflappy" target="_blank" class="footer-social">🎵</a>
+        <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="footer-social">💬</a>
+        <a href="https://x.com/EsotericFlap" target="_blank" class="footer-social">🐦</a>
+    </div>
+    <p>&copy; 2025 LoveFlappy · All rights reserved</p>
+</footer>
+
+<script>
+(function(){
+    const canvas=document.getElementById('star-canvas'), ctx=canvas.getContext('2d');
+    let W,H,stars=[];
+    function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+    const colors=['#ffffff','#e0aaff','#c084fc','#818cf8','#f472b6','#fbbf24','#93c5fd'];
+    function mkStar(){ return {x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.2,c:colors[Math.floor(Math.random()*colors.length)],phase:Math.random()*Math.PI*2,speed:Math.random()*.6+.3}; }
+    function init(){ resize(); stars=Array.from({length:180},mkStar); }
+    let t=0;
+    function draw(){ ctx.clearRect(0,0,W,H); t+=.012; stars.forEach(s=>{ const a=.2+.8*(.5+.5*Math.sin(t*s.speed+s.phase)); ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle=s.c; ctx.globalAlpha=a; ctx.fill(); }); ctx.globalAlpha=1; requestAnimationFrame(draw); }
+    window.addEventListener('resize',resize); init(); draw();
+})();
+(function(){
+    const glyphs=['✦','✧','⋆','˚','·','✿','♡','★','❀','◦'];
+    const colors=['#c084fc','#f472b6','#818cf8','#fbbf24','#93c5fd','#a78bfa'];
+    const container=document.getElementById('sparkleOverlay');
+    for(let i=0;i<26;i++){
+        const el=document.createElement('span'); el.className='sp';
+        el.textContent=glyphs[Math.floor(Math.random()*glyphs.length)];
+        const dur=(Math.random()*2+2).toFixed(2), delay=(Math.random()*3).toFixed(2);
+        el.style.cssText=`left:${Math.random()*98}%;top:${Math.random()*100}%;color:${colors[Math.floor(Math.random()*colors.length)]};font-size:${(Math.random()*7+9).toFixed(1)}px;--d:${dur}s;--delay:-${delay}s;`;
+        container.appendChild(el);
+    }
+})();
+
+// Pull YouTube subscriber count via the existing API proxy
+async function fetchYTSubs() {
+    try {
+        const qs = new URLSearchParams({ endpoint: 'channels', id: 'UCxIegFXXGTW-2qSrk7x-Xag', part: 'statistics' });
+        const res = await fetch('/api/youtube?' + qs);
+        const data = await res.json();
+        const count = data.items?.[0]?.statistics?.subscriberCount;
+        if (count) {
+            const n = parseInt(count);
+            const label = n >= 1000 ? (n/1000).toFixed(1) + 'K' : n.toString();
+            document.getElementById('ytSubs').textContent = label;
+        }
+    } catch(e) {}
+}
+fetchYTSubs();
+</script>
+</body>
+</html>

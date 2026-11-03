@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosplay Gallery ✦ LoveFlappy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --pink: #F472B6; --rose: #FB7185; --lavender: #A78BFA;
+            --violet: #7C3AED; --cosmic: #C084FC; --nebula: #818CF8;
+            --teal: #34D399; --gold: #FBBF24;
+            --deep: #0D0618; --mid: #150D2E;
+            --surface: rgba(255,255,255,0.05); --border: rgba(167,139,250,0.25);
+            --glow-pink: rgba(244,114,182,0.4); --glow-violet: rgba(124,58,237,0.4);
+        }
+        body { font-family: 'Nunito', sans-serif; background: var(--deep); color: #e2d9f3; overflow-x: hidden; }
+
+        .galaxy-bg {
+            position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(ellipse at 20% 20%, #1a0533 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 70%, #0a1a3a 0%, transparent 55%),
+                        radial-gradient(ellipse at 50% 50%, #12022e 0%, #0D0618 100%);
+        }
+        .nebula-layer {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 30% 60%, rgba(192,132,252,0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 30%, rgba(129,140,248,0.10) 0%, transparent 45%),
+                        radial-gradient(ellipse at 60% 80%, rgba(244,114,182,0.08) 0%, transparent 40%);
+        }
+        #star-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        .sparkle-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .sp {
+            position: absolute; font-size: 13px;
+            animation: twinkle var(--d, 2.5s) ease-in-out infinite var(--delay, 0s);
+        }
+        @keyframes twinkle {
+            0%,100% { opacity:.1; transform:scale(.7); }
+            50%      { opacity:.9; transform:scale(1.3); }
+        }
+
+        /* Header */
+        header {
+            position: fixed; top: 0; width: 100%;
+            padding: 14px 48px;
+            background: rgba(13,6,24,0.88); backdrop-filter: blur(20px);
+            z-index: 1000; border-bottom: 1px solid rgba(167,139,250,0.3);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img {
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 2px solid var(--cosmic);
+            box-shadow: 0 0 16px var(--glow-violet), 0 0 32px rgba(192,132,252,0.2);
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500; font-style: italic;
+            background: linear-gradient(90deg, var(--cosmic), var(--pink), var(--lavender));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        nav { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        nav a {
+            color: #c4b5fd; text-decoration: none; padding: 6px 14px; border-radius: 999px;
+            font-size: 13px; font-weight: 600; transition: all .2s;
+        }
+        nav a:hover, nav a.active { color: #fff; background: rgba(167,139,250,0.18); }
+        .nav-streams {
+            background: linear-gradient(135deg, var(--violet), var(--pink)) !important;
+            color: #fff !important; box-shadow: 0 4px 18px rgba(124,58,237,0.45);
+        }
+        .nav-streams:hover { opacity: .9; transform: translateY(-1px); }
+
+        /* Page hero */
+        .page-hero {
+            padding: 130px 24px 60px; text-align: center; position: relative;
+        }
+        .page-hero-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 500px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(192,132,252,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .page-title {
+            font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 500;
+            background: linear-gradient(135deg, #e0aaff, var(--pink), #93c5fd, var(--cosmic));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px; position: relative; z-index: 1;
+        }
+        .page-subtitle { font-size: 14px; color: #a78bfa; letter-spacing: .15em; position: relative; z-index: 1; }
+
+        /* Filter bar */
+        .filter-bar {
+            display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+            padding: 0 24px 40px; position: relative; z-index: 1;
+        }
+        .filter-btn {
+            padding: 7px 20px; border-radius: 999px; border: 1.5px solid rgba(167,139,250,0.3);
+            background: transparent; color: #a78bfa; font-family: 'Nunito', sans-serif;
+            font-size: 12px; font-weight: 700; cursor: pointer; letter-spacing: .05em;
+            transition: all .2s;
+        }
+        .filter-btn:hover { background: rgba(167,139,250,0.12); border-color: rgba(167,139,250,0.6); color: #e0aaff; }
+        .filter-btn.active { background: rgba(192,132,252,0.2); border-color: var(--cosmic); color: #e0aaff; }
+
+        /* Gallery grid */
+        .gallery-wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1; }
+        .gallery-grid {
+            columns: 4; column-gap: 16px;
+        }
+        @media (max-width: 1100px) { .gallery-grid { columns: 3; } }
+        @media (max-width: 720px)  { .gallery-grid { columns: 2; } }
+        @media (max-width: 440px)  { .gallery-grid { columns: 1; } }
+
+        .cosplay-card {
+            break-inside: avoid; margin-bottom: 16px;
+            border-radius: 18px; overflow: hidden;
+            border: 1px solid rgba(167,139,250,0.2);
+            background: rgba(255,255,255,0.04);
+            transition: all .3s; cursor: pointer;
+            display: block;
+        }
+        .cosplay-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(192,132,252,0.55);
+            box-shadow: 0 14px 40px rgba(124,58,237,0.3), 0 0 0 1px rgba(192,132,252,0.1);
+        }
+        .cosplay-card.hidden { display: none; }
+
+        /* Cosplay image placeholder — swap src="" for real photos */
+        .cosplay-img-wrap {
+            position: relative; width: 100%; overflow: hidden;
+        }
+        .cosplay-img-wrap img {
+            width: 100%; display: block; object-fit: cover;
+            background: linear-gradient(135deg, #1a0533, #0a1a3a);
+        }
+        .cosplay-emoji-placeholder {
+            width: 100%; display: flex; align-items: center; justify-content: center;
+            font-size: 64px;
+            background: var(--grad, linear-gradient(135deg,#1a0533,#2d1054));
+            padding: 32px 0;
+        }
+        .fave-ribbon {
+            position: absolute; top: 12px; left: -4px;
+            background: linear-gradient(135deg, var(--violet), var(--pink));
+            color: #fff; font-size: 10px; font-weight: 700;
+            padding: 4px 14px 4px 10px; border-radius: 0 8px 8px 0;
+            letter-spacing: .06em; box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+        }
+        .cosplay-info { padding: 12px 14px 14px; }
+        .cosplay-name { font-size: 14px; font-weight: 700; color: #e2d9f3; margin-bottom: 3px; }
+        .cosplay-series { font-size: 12px; color: #a78bfa; margin-bottom: 8px; }
+        .cosplay-meta { display: flex; align-items: center; justify-content: space-between; }
+        .cosplay-tag {
+            font-size: 10px; padding: 3px 10px; border-radius: 999px;
+            font-weight: 700; letter-spacing: .05em;
+        }
+        .tag-magic  { background: rgba(192,132,252,0.18); color: #d8b4fe; border: 1px solid rgba(192,132,252,0.3); }
+        .tag-fantasy{ background: rgba(129,140,248,0.18); color: #c7d2fe; border: 1px solid rgba(129,140,248,0.3); }
+        .tag-scifi  { background: rgba(52,211,153,0.14);  color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); }
+        .tag-anime  { background: rgba(244,114,182,0.14); color: #fda4af; border: 1px solid rgba(244,114,182,0.3); }
+        .tag-game   { background: rgba(251,191,36,0.13);  color: #fcd34d; border: 1px solid rgba(251,191,36,0.3); }
+
+        .love-btn {
+            display: flex; align-items: center; gap: 5px;
+            background: none; border: none; cursor: pointer;
+            color: #7c6fa0; font-size: 12px; font-weight: 700;
+            font-family: 'Nunito', sans-serif; transition: color .2s;
+        }
+        .love-btn:hover { color: #f472b6; }
+        .love-btn.loved { color: #f472b6; }
+        .love-btn svg { width: 14px; height: 14px; }
+
+        /* Divider */
+        .sec-divider {
+            display: flex; align-items: center; gap: 12px;
+            font-family: 'Playfair Display', serif; font-size: 15px;
+            color: #c084fc; font-style: italic;
+            max-width: 1280px; margin: 0 auto 32px; padding: 0 24px;
+            position: relative; z-index: 1;
+        }
+        .sec-divider::after { content: ''; flex: 1; height: 1px; background: rgba(167,139,250,0.18); }
+
+        /* Community CTA */
+        .submit-cta {
+            max-width: 640px; margin: 0 auto 80px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(167,139,250,0.25);
+            border-radius: 24px; padding: 48px 36px; text-align: center;
+            position: relative; z-index: 1;
+        }
+        .submit-cta-icon { font-size: 48px; margin-bottom: 14px; }
+        .submit-cta h3 {
+            font-family: 'Playfair Display', serif; font-size: 24px;
+            background: linear-gradient(90deg, var(--cosmic), var(--pink));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .submit-cta p { color: #9d84c2; line-height: 1.65; font-size: 14px; margin-bottom: 24px; }
+        .submit-cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .cta-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 26px; border-radius: 999px;
+            font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13px;
+            text-decoration: none; transition: all .25s; letter-spacing: .3px;
+        }
+        .cta-btn-primary {
+            background: linear-gradient(135deg, var(--violet), var(--pink));
+            color: #fff; box-shadow: 0 6px 24px rgba(124,58,237,0.4);
+        }
+        .cta-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(124,58,237,0.55); }
+        .cta-btn-secondary {
+            background: rgba(255,255,255,0.06);
+            color: #c4b5fd; border: 1px solid rgba(167,139,250,0.3);
+        }
+        .cta-btn-secondary:hover { background: rgba(167,139,250,0.15); border-color: var(--lavender); transform: translateY(-2px); }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center; padding: 80px 24px; color: #5a4d72; font-size: 15px;
+        }
+        .empty-state .big-icon { font-size: 56px; margin-bottom: 16px; }
+
+        footer {
+            text-align: center; padding: 48px 24px 32px;
+            background: rgba(13,6,24,0.9); border-top: 1px solid rgba(167,139,250,0.2);
+            color: #5a4d72; position: relative; z-index: 1;
+        }
+        .footer-heart { font-family: 'Playfair Display', serif; font-size: 15px; color: #a78bfa; font-style: italic; margin-bottom: 18px; }
+        .footer-socials { display: flex; justify-content: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+        .footer-social {
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(167,139,250,0.18);
+            color: #c4b5fd; text-decoration: none; font-size: 20px; transition: all .25s;
+        }
+        .footer-social:hover { transform: translateY(-4px); border-color: var(--cosmic); background: rgba(192,132,252,0.12); box-shadow: 0 8px 24px rgba(124,58,237,0.3); }
+        footer p { font-size: 12px; }
+
+        @media (max-width: 768px) {
+            header { padding: 12px 16px; }
+            .page-title { font-size: 36px; }
+            nav a { padding: 5px 10px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="galaxy-bg"><div class="nebula-layer"></div></div>
+<canvas id="star-canvas"></canvas>
+<div class="sparkle-overlay" id="sparkleOverlay"></div>
+
+<header>
+    <a href="index.html" class="logo-link">
+        <img src="https://i.imgur.com/5qc3hb8.jpg" alt="LoveFlappy" class="logo-img">
+        <span class="logo-text">LoveFlappy</span>
+    </a>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="cosplay.html" class="active">✦ Cosplays</a>
+        <a href="media.html">🎮 Media</a>
+        <a href="community.html">🔮 Community</a>
+        <a href="streams.html" class="nav-streams">🔴 Streams</a>
+    </nav>
+</header>
+
+<div class="page-hero">
+    <div class="page-hero-glow"></div>
+    <div class="page-title">✦ Cosplay Gallery ✦</div>
+    <div class="page-subtitle">✧ every costume tells a story ✧</div>
+</div>
+
+<div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">✦ All</button>
+    <button class="filter-btn" data-filter="magic">✨ Magical Girl</button>
+    <button class="filter-btn" data-filter="anime">🌸 Anime</button>
+    <button class="filter-btn" data-filter="fantasy">🧝 Fantasy</button>
+    <button class="filter-btn" data-filter="game">🎮 Game</button>
+    <button class="filter-btn" data-filter="scifi">🚀 Sci-Fi</button>
+</div>
+
+<div class="gallery-wrap">
+    <div class="sec-divider">🔮 featured cosplays</div>
+
+    <div class="gallery-grid" id="cosplayGrid">
+
+        <!-- ── CARD 1 — swap the emoji placeholder for <img src="your-photo.jpg"> ── -->
+        <div class="cosplay-card" data-tags="magic anime">
+            <div class="cosplay-img-wrap">
+                <div class="cosplay-emoji-placeholder" style="--grad:linear-gradient(135deg,#2d0a3e,#1a0a30);padding:48px 0;">🌙</div>
+                <div class="fave-ribbon">fave ♡</div>
+            </div>
+            <div class="cosplay-info">
+                <div class="cosplay-name">Sailor Moon</div>
+                <div class="cosplay-series">Sailor Moon ✨</div>
+                <div class="cosplay-meta">
+                    <span class="cosplay-tag tag-magic">Magical Girl</span>
+                    <button class="love-btn" onclick="toggleLove(this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                        <span>24</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── CARD 2 ── -->
+        <div class="cosplay-card" data-tags="magic anime">
+            <div class="cosplay-img-wrap">
+                <div class="cosplay-emoji-placeholder" style="--grad:linear-gradient(135deg,#0f1a3a,#1a0f2e);padding:56px 0;">🧚</div>
+            </div>
+            <div class="cosplay-info">
+                <div class="cosplay-name">Add your cosplay</div>
+                <div class="cosplay-series">Character · Series</div>
+                <div class="cosplay-meta">
+                    <span class="cosplay-tag tag-anime">Anime</span>
+                    <button class="love-btn" onclick="toggleLove(this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                        <span>0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── CARD 3 ── -->
+        <div class="cosplay-card" data-tags="fantasy">
+            <div class="cosplay-img-wrap">
+                <div class="cosplay-emoji-placeholder" style="--grad:linear-gradient(135deg,#0a2a1a,#1a1040);padding:44px 0;">🧝</div>
+            </div>
+            <div class="cosplay-info">
+                <div class="cosplay-name">Add your cosplay</div>
+                <div class="cosplay-series">Character · Series</div>
+                <div class="cosplay-meta">
+                    <span class="cosplay-tag tag-fantasy">Fantasy</span>
+                    <button class="love-btn" onclick="toggleLove(this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                        <span>0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── CARD 4 ── -->
+        <div class="cosplay-card" data-tags="game">
+            <div class="cosplay-img-wrap">
+                <div class="cosplay-emoji-placeholder" style="--grad:linear-gradient(135deg,#1a0f0a,#2a1a00);padding:52px 0;">🗡️</div>
+            </div>
+            <div class="cosplay-info">
+                <div class="cosplay-name">Add your cosplay</div>
+                <div class="cosplay-series">Character · Game</div>
+                <div class="cosplay-meta">
+                    <span class="cosplay-tag tag-game">Game</span>
+                    <button class="love-btn" onclick="toggleLove(this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                        <span>0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── CARD 5 ── -->
+        <div class="cosplay-card" data-tags="scifi">
+            <div class="cosplay-img-wrap">
+                <div class="cosplay-emoji-placeholder" style="--grad:linear-gradient(135deg,#001a2a,#0a1030);padding:60px 0;">🚀</div>
+            </div>
+            <div class="cosplay-info">
+                <div class="cosplay-name">Add your cosplay</div>
+                <div class="cosplay-series">Character · Series</div>
+                <div class="cosplay-meta">
+                    <span class="cosplay-tag tag-scifi">Sci-Fi</span>
+                    <button class="love-btn" onclick="toggleLove(this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                        <span>0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── CARD 6 ── -->
+        <div class="cosplay-card" data-tags="magic">
+            <div class="cosplay-img-wrap">
+                <div class="cosplay-emoji-placeholder" style="--grad:linear-gradient(135deg,#2a0a2e,#0a1a3a);padding:40px 0;">🌊</div>
+            </div>
+            <div class="cosplay-info">
+                <div class="cosplay-name">Add your cosplay</div>
+                <div class="cosplay-series">Character · Series</div>
+                <div class="cosplay-meta">
+                    <span class="cosplay-tag tag-magic">Magical Girl</span>
+                    <button class="love-btn" onclick="toggleLove(this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                        <span>0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Fan submit CTA -->
+    <div class="submit-cta">
+        <div class="submit-cta-icon">📸</div>
+        <h3>Share Your Cosplay!</h3>
+        <p>Fan of LoveFlappy and love to cosplay? Share your photos in the Discord community! Tag your posts and be featured on this page ✨</p>
+        <div class="submit-cta-btns">
+            <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="cta-btn cta-btn-primary">💬 Join the Discord</a>
+            <a href="community.html" class="cta-btn cta-btn-secondary">🔮 Community Hub</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-heart">✦ made with lots of love ✦</div>
+    <div class="footer-socials">
+        <a href="https://www.youtube.com/@LoveFlappy" target="_blank" class="footer-social">📺</a>
+        <a href="https://www.twitch.tv/loveflappy" target="_blank" class="footer-social">🎮</a>
+        <a href="https://www.tiktok.com/@oflappy" target="_blank" class="footer-social">🎵</a>
+        <a href="https://discord.gg/pnRCbEAtTk" target="_blank" class="footer-social">💬</a>
+        <a href="https://x.com/EsotericFlap" target="_blank" class="footer-social">🐦</a>
+    </div>
+    <p>&copy; 2025 LoveFlappy · All rights reserved</p>
+</footer>
+
+<script>
+// Star canvas
+(function(){
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars=[];
+    function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+    const colors=['#ffffff','#e0aaff','#c084fc','#818cf8','#f472b6','#fbbf24','#93c5fd'];
+    function mkStar(){ return {x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.2,c:colors[Math.floor(Math.random()*colors.length)],phase:Math.random()*Math.PI*2,speed:Math.random()*.6+.3}; }
+    function init(){ resize(); stars=Array.from({length:180},mkStar); }
+    let t=0;
+    function draw(){
+        ctx.clearRect(0,0,W,H); t+=.012;
+        stars.forEach(s=>{ const a=.2+.8*(.5+.5*Math.sin(t*s.speed+s.phase)); ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle=s.c; ctx.globalAlpha=a; ctx.fill(); });
+        ctx.globalAlpha=1; requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize',resize); init(); draw();
+})();
+
+// Sparkles
+(function(){
+    const glyphs=['✦','✧','⋆','˚','·','✿','♡','★','❀','◦'];
+    const colors=['#c084fc','#f472b6','#818cf8','#fbbf24','#93c5fd','#a78bfa','#fb7185'];
+    const container=document.getElementById('sparkleOverlay');
+    for(let i=0;i<24;i++){
+        const el=document.createElement('span'); el.className='sp';
+        el.textContent=glyphs[Math.floor(Math.random()*glyphs.length)];
+        const dur=(Math.random()*2+2).toFixed(2), delay=(Math.random()*3).toFixed(2);
+        el.style.cssText=`left:${Math.random()*98}%;top:${Math.random()*100}%;color:${colors[Math.floor(Math.random()*colors.length)]};font-size:${(Math.random()*7+9).toFixed(1)}px;--d:${dur}s;--delay:-${delay}s;`;
+        container.appendChild(el);
+    }
+})();
+
+// Filter
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('.cosplay-card').forEach(card => {
+            const tags = card.dataset.tags || '';
+            card.classList.toggle('hidden', filter !== 'all' && !tags.includes(filter));
+        });
+    });
+});
+
+// Love button
+function toggleLove(btn) {
+    const isLoved = btn.classList.toggle('loved');
+    const span = btn.querySelector('span');
+    const n = parseInt(span.textContent) || 0;
+    span.textContent = isLoved ? n + 1 : Math.max(0, n - 1);
+    const svg = btn.querySelector('svg');
+    svg.setAttribute('fill', isLoved ? 'currentColor' : 'none');
+}
+</script>
+</body>
+</html>
